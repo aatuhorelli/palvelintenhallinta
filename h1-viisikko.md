@@ -1,5 +1,7 @@
 # H1 - Viisikko
 
+Viikkotehtävien tehtävänannot löytyvät osoitteesta https://terokarvinen.com/2023/configuration-management-2023-autumn/
+
 ## x) Lue ja tiivistä
 
 ### Create a Web Page Using Github
