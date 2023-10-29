@@ -15,7 +15,7 @@
      - tiedoston_nimi.md (.md-pääteen käyttäminen muuntaa tiedoston automaattisesti webbisivuksi)
    - Kirjoita sisältöä tiedostoon ja julkaise se
   
-Lähde: Tero Karvinen, 2023. Create a Web Page Using Github. Luettavissa: [https://terokarvinen.com/2023/create-a-web-page-using-github/](https://terokarvinen.com/2023/create-a-web-page-using-github/).
+Lähde: Tero Karvinen, 2023. Create a Web Page Using Github. Luettavissa: https://terokarvinen.com/2023/create-a-web-page-using-github/
 
 ### Run Salt Command Locally
  - Saltia käytetään usein tietokoneiden(orja) hallinnointiin verkon yli
@@ -59,4 +59,8 @@ cmd.run (suosi file, service tai useria cmd.run-komennon sijaan):
 
      $ sudo salt-call --local -l info state.single cmd.run 'touch /tmp/foo' creates="/tmp/foo" # ajaa komennon touch /tmp/foo
 
-Lähde: Tero Karvinen, 2021. Run Salt Command Locally. Luettavissa: [https://terokarvinen.com/2021/salt-run-command-locally/](https://terokarvinen.com/2021/salt-run-command-locally/]
+Lähde: Tero Karvinen, 2021. Run Salt Command Locally. Luettavissa: https://terokarvinen.com/2021/salt-run-command-locally/
+
+## A) Saltin-minionin asennus koneelle
+
+
