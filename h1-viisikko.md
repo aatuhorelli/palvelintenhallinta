@@ -65,4 +65,30 @@ Lähde: Tero Karvinen, 2021. Run Salt Command Locally. Luettavissa: https://tero
 
 ## A) Saltin-minionin asennus koneelle
 
+Viikkotehtäviä varten asensin tuoreen kopion Debian12:sta (12.2.0-amd64-xcfe) VirtualBoxiin. 
+    
+    Isäntälaitteen tiedot:
+    OS: Windows 10
+    Prosessori: Intel I7-6700K @ 4.5Ghz (64bit)
+    RAM: 32GB
+    SSD: 1TB M.2 NVMe
 
+Muistin luennolta, että Saltin asentaminen Debian 12:een paketinhallinnan kautta ei toistaiseksi onnistu. Seurasin [Teron ohjeita tehtävänannon vinkkiosiosta](https://terokarvinen.com/2023/configuration-management-2023-autumn/). Ohjeen komennot lisäävät uuden lähteen paketinhallintaan, päivittävät paketinhallinnan listat ja asentavat salt-minionin. Netistä löytyvien komentojen ajamisessa on syytä noudattaa harkintaa. Pidin Teroa kuitenkin luotettavana lähteenä, joten uskalsin ajaa komennot.
+
+Loin uuden tiedoston salt-asennus.sh (````$ nano salt-asennus.sh````), johon lisäsin seuraavat rivit. Näin kaikki komennot on mahdollista suorittaa komennolla ````$ bash salt-asennus.sh````. 
+
+    sudo mkdir /etc/apt/keyrings # ei haittaa vaikka sanoisi etta hakemisto on jo
+    sudo curl -fsSL -o /etc/apt/keyrings/salt-archive-keyring-2023.gpg https://repo.saltproject.io/salt/py3/debian/11/amd64/SALT-PROJECT-GPG-PUBKEY- 
+    2023.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/salt-archive-keyring-2023.gpg arch=amd64] https://repo.saltproject.io/salt/py3/debian/11/amd64/latest bullseye 
+    main" | sudo tee /etc/apt/sources.list.d/salt.list
+    sudo apt-get update
+    sudo apt-get install salt-minion
+
+Tarkastin tiedoston sisällön komennolla ````$ cat salt-asennus.sh````, ja todettuani sen oikeaksi ajoin tiedoston: ````$ bash salt-asennus.sh````. Tämän jälkeen syötin sudo-oikeuksille salasanan ja asennus käynnistyi. Asennuksen varmistaessa haluanko asentaa salt-minionin (Y/N)?, valitsin Y. 
+
+![Add file: salt-shell](/img/salt-shelli.png)
+
+Varmistin, että asennus onnistui tarkistamalla saltin version komennolla ````$ sudo salt-call --version-````. Versio tulostui, joten asennus oli onnistunut.
+
+![Add file: salt-asennettu](/img/salt-asennettu.png)
