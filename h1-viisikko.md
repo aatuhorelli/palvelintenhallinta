@@ -57,9 +57,9 @@ user.present:
     $ sudo salt-call --local -l info state.single user.present testi01 # käyttäjä testi01 löytyy
     $ sudo salt-call --local -l info state.single user.absent testi01 # käyttäjää testi01 ei ole
 
-cmd.run (suosi file, service tai useria cmd.run-komennon sijaan):
+cmd.run (Idempotenssin määrittely tärkeää cmd.runin yhteydessä / creates, onlyif, unless):
 
-     $ sudo salt-call --local -l info state.single cmd.run 'touch /tmp/foo' creates="/tmp/foo" # ajaa komennon touch /tmp/foo
+     $ sudo salt-call --local -l info state.single cmd.run 'touch /tmp/foo' creates="/tmp/foo" # luo tiedoston /tmp/foo touchilla
 
 Lähde: Tero Karvinen, 2021. Run Salt Command Locally. Luettavissa: https://terokarvinen.com/2021/salt-run-command-locally/
 
@@ -96,7 +96,7 @@ Varmistin, että asennus onnistui tarkistamalla saltin version komennolla ````$ 
 
 ## B & C) Viisi tärkeintä + idempotenssi
 
-Teron [artikkelin](https://terokarvinen.com/2021/salt-run-command-locally/) mukaan viisi tärkeintä funktiota Saltissa ovat pkg, file, service, user ja cmd.run. Näistä kaikkia paitsi cmd.run-funktiota voidaan käyttää idempotentin tilan määrittelyyn. Idempotenssilla tarkoitetaan sitä, että määrittelemme järjestelmän tavoitetilan, johon sen tulee pyrkiä. Jos tavoitetila on jo saavutettu, kokoonpanoon ei tehdä muutoksia. Cmd.runilla voidaan ajaa haluttuja komentoja, mutta usein on järkevämpää määritellä tavoitetila, kuin esimerkiksi käskeä orjaa asentamaan cmd.run-funktiolla jokin paketti. 
+Teron [artikkelin](https://terokarvinen.com/2021/salt-run-command-locally/) mukaan viisi tärkeintä idempotentin tilan funktiota Saltissa ovat pkg, file, service, user ja cmd.run. Idempotenssilla tarkoitetaan sitä, että määrittelemme järjestelmän tavoitetilan, johon sen tulee pyrkiä. Jos tavoitetila on jo saavutettu, kokoonpanoon ei tehdä muutoksia. 
 
 Testasin kaikkia viittä paikallisesti. 
 
@@ -124,9 +124,79 @@ Testasin myös paketin poistoa komennolla ````$ sudo salt-call --local -l info s
 
 Sinne meni! Asensin vielä saltilla takaisin, koska ajattelin hyödyntää Apachea myöhemmässä vaiheessa.
 
+### service.running/dead
+
+Apache2 oli siis asennettu, joten määrittelin Saltilla, että haluan sen myös olevan käynnissä.
+
+    $ sudo salt-call --local -l info state.single service.running apache2 enable=True
+
+![Add file: apache käynnissä](/img/apache2-käynnissä.png)
+
+Apache2 oli käynnistynyt itsestään asennuksen jälkeen. "The service apache2 is already running". ````$ curl localhost```` palautti Apachen esimerkkisivun.
+
+Päätin sammuttaa demonin Saltin avulla. Ajoin komennon kahdesti peräkkäin. Idempotenssin mukaisesti ensimmäisellä suorituskerralla pitäisi tulla Succeeded: 1, changed=1, eli prosessi on tapettu onnistuneesti. Toisella suorituskerralla prosessi ei ole enää päällä, joten toimenpiteitä ei tehdä.
+
+    $ sudo salt-call --local -l info state.single service.dead apache2 enable=False
+
+Odotettu lopputulos syntyi.
+
+![Add file: Idempotenssia, beibi](/img/idempotenssi-dead.png)
+
+### user
+
+user-funktiolla voidaan varmistaa, että tietty käyttäjä löytyy tai on poistettu. Varmistin ensin user.absentia hyödyntäen, että käyttäjää kikki ei löydy. 
+
+    $ sudo salt-call --local -l info state.single user.absent kikki
+
+![Add file: kikki puuttuu](/img/kikki-absent.png)
+
+Käyttäjää ei löytynyt, ei muutostarpeita. Onnistunut suoritus.
+
+Seuraavaksi loin käyttäjän user.presentiä hyödyntäen. Tarkistin lopuksi, että kikin kotihakemisto oli luotu. 
+    
+    $ sudo salt-call --local -l info state.single user.present kikki
+    $ ls -l /home/
+    
+![Add file: kikki löytyy](/img/kikki-present.png)
+
+Käyttäjä luotu (changed=1), kotihakemisto löydettävissä.
+
 ### file.managed
 
+File.managed-funktiolla voidaan varmistaa, että tiedosto löytyy, ja halutessaan määritellä sille sisältöä. File.absent varmistaa, että tiedosto on poistettu. Aloitin tarkistamalla, että testitiedostoa /tmp/moro ei löydy:
 
+    $ sudo salt-call --local -l info state.single file.absent /tmp/moro
+
+![Add file: ei moro](/img/file-absent.png)
+
+Not present, succeeded: 1. Tiedosto onnistuneesti todettu poissaolevaksi ilman muita toimenpiteitä. 
+
+Seuraavaksi loin /tmp/moro-tiedoston Saltilla:
+
+    $ sudo salt-call --local -l info state.single file.managed /tmp/moro # Tiedoston olemassaolon tarkistus ja luominen
+    $ cat /tmp/moro # tyhjä tiedosto, ei tulostettavaa
+    $ ls /tmp/ # moro löytyy
+
+![Add file: moro moro](/img/file-managed.png)
+
+File created, succeeded 1, changed 1. Tiedosto luotu ja toiminto onnistunut. Tyhjä tiedosto on tosin tylsä, joten lisäsin sinne sisältöä ja luin ne catilla.
+
+    $ sudo salt-call --local -l info state.single file.managed /tmp/moro contents="No moro moro!"
+    $ cat /tmp/moro
+
+![Add file: moro päivitetty](/img/file-updated.png)
+
+Tiedosto /tmp/moro löytyi ja sen sisältö päivitettiin onnistuneesti. 
+
+### cmd.run
+
+Cmd.runilla voidaan ajaa tietty komento. Cmd.run on määriteltävä idempotentiksi creates, unless tai onlyif avulla. Loin tiedoston echolla ja määrittelin, että komento luo tiedoston. Sen ei siis pitäisi tehdä mitään, jos tiedosto jo löytyy. Ajoin seuraavan komennon kahdesti:
+
+    $ sudo salt-call --local -l info state.single cmd.run 'echo olen seeämdee run >> /tmp/runi' creates="/tmp/runi"
+
+![Add file: seeämdee](/img/cmd-run.png)
+
+Ensimmäisellä suorituskerralla tiedosto luotiin sisällöllä "olen seeämdee run" (changed=1). Toisella suorituskerralla tiedosto löytyi jo, eikä muutoksia tehty. 
 
 ## Lähteet
 
