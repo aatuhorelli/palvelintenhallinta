@@ -92,3 +92,43 @@ Tarkastin tiedoston sisällön komennolla ````$ cat salt-asennus.sh````, ja tode
 Varmistin, että asennus onnistui tarkistamalla saltin version komennolla ````$ sudo salt-call --version-````. Versio tulostui, joten asennus oli onnistunut.
 
 ![Add file: salt-asennettu](/img/salt-asennettu.png)
+
+
+## B & C) Viisi tärkeintä + idempotenssi
+
+Teron [artikkelin](https://terokarvinen.com/2021/salt-run-command-locally/) mukaan viisi tärkeintä funktiota Saltissa ovat pkg, file, service, user ja cmd.run. Näistä kaikkia paitsi cmd.run-funktiota voidaan käyttää idempotentin tilan määrittelyyn. Idempotenssilla tarkoitetaan sitä, että määrittelemme järjestelmän tavoitetilan, johon sen tulee pyrkiä. Jos tavoitetila on jo saavutettu, kokoonpanoon ei tehdä muutoksia. Cmd.runilla voidaan ajaa haluttuja komentoja, mutta usein on järkevämpää määritellä tavoitetila, kuin esimerkiksi käskeä orjaa asentamaan cmd.run-funktiolla jokin paketti. 
+
+Testasin kaikkia viittä paikallisesti. 
+
+### pkg
+
+Virtuaalikoneessa oli puhdas asennus Debianista, joten päätin asentaa siihen Apache2:n Saltin avulla. Varmistin ensin, että pakettia ei oltu asennettu potkaisemalla sitä: ````$ sudo systemctl restart apache2````. "Failed to restart apache2.service: Unit apache2.service not found", eli Apachea ei löydy.
+
+    $ sudo salt-call --local -l info state.single pkg.installed apache2
+    
+Asennus kesti noin 10 sekuntia, minkä jälkeen Salt antoi seuraavanlaisen yhteenvedon:
+
+![Add file: apache2-asennus](/img/apache2-asennus.png)
+
+Raportti vaikutti melko selkeältä. Käytin funktiota pkg.installed paketille apache2 kellonajassa 21:18:07. "Result: True" viittaa siihen, että suorituksen jälkeen paketti riippuvuuksineen oli asennettu. Kommenttikenttä kertoo, että apache2-paketti asennettiin. Alareunan yhteenvedossa Succeeded: 1 tarkoittaa, että haluttu paketti löytyy laitteelta ja changed=1, että se on asennettu suorituksen aikana.
+
+Ajoin komennon vielä toisen kerran. Tällöin idempotenssin hengessä tavoitetila oli jo saavutettu, ja muutoksia ei pitäisi tulla. 
+
+![Add file: apache2-toinen yritys](/img/apache2-toka.png)
+
+".. packages are already installed" / Succeeded: 1 (ilman muutoksia). ````$ curl localhost```` palautti myös Apachen index-sivun. Apache2 siis löytyi!
+
+Testasin myös paketin poistoa komennolla ````$ sudo salt-call --local -l info state.singel pkg.removed apache2````, minkä jälkeen koitin uudelleenkäynnistää apachen ````$ sudo systemctl restart apache2````. 
+
+![Add file: apache2 pois](/img/apache2-poistettu.png)
+
+Sinne meni! Asensin vielä saltilla takaisin, koska ajattelin hyödyntää Apachea myöhemmässä vaiheessa.
+
+### file.managed
+
+
+
+## Lähteet
+
+Tero Karvinen, 2023. Infra as Code 2023. Luettavissa https://terokarvinen.com/2023/configuration-management-2023-autumn/
+Tero Karvinen, 2021. Run Salt Command Locally. Luettavissa: https://terokarvinen.com/2021/salt-run-command-locally/
