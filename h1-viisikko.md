@@ -73,9 +73,9 @@ Viikkotehtäviä varten asensin tuoreen kopion Debian12:sta (12.2.0-amd64-xcfe) 
     RAM: 32GB
     SSD: 1TB M.2 NVMe
 
-Muistin luennolta, että Saltin asentaminen Debian 12:een paketinhallinnan kautta ei toistaiseksi onnistu. Seurasin [Teron ohjeita tehtävänannon vinkkiosiosta](https://terokarvinen.com/2023/configuration-management-2023-autumn/). Ohjeen komennot lisäävät uuden lähteen paketinhallintaan, päivittävät paketinhallinnan listat ja asentavat salt-minionin. Netistä löytyvien komentojen ajamisessa on syytä noudattaa harkintaa. Pidin Teroa kuitenkin luotettavana lähteenä, joten uskalsin ajaa komennot.
+Muistin luennolta, että Saltin asentaminen Debian 12:een paketinhallinnan kautta ei toistaiseksi onnistu. Seurasin [Teron ohjeita tehtävänannon vinkkiosiosta](https://terokarvinen.com/2023/configuration-management-2023-autumn/)[1]. Ohjeen komennot lisäävät uuden lähteen paketinhallintaan, päivittävät paketinhallinnan listat ja asentavat salt-minionin. Netistä löytyvien komentojen ajamisessa on syytä noudattaa harkintaa. Pidin Teroa kuitenkin luotettavana lähteenä, joten uskalsin ajaa komennot.
 
-Loin uuden tiedoston salt-asennus.sh (````$ nano salt-asennus.sh````), johon lisäsin seuraavat rivit. Näin kaikki komennot on mahdollista suorittaa komennolla ````$ bash salt-asennus.sh````. 
+Loin uuden shell-skriptin salt-asennus.sh (````$ nano salt-asennus.sh````), johon lisäsin seuraavat rivit. Näin kaikki komennot on mahdollista suorittaa yhdellä komennolla ````$ bash salt-asennus.sh````. 
 
     sudo mkdir /etc/apt/keyrings # ei haittaa vaikka sanoisi etta hakemisto on jo
     sudo curl -fsSL -o /etc/apt/keyrings/salt-archive-keyring-2023.gpg https://repo.saltproject.io/salt/py3/debian/11/amd64/SALT-PROJECT-GPG-PUBKEY- 
@@ -96,7 +96,7 @@ Varmistin, että asennus onnistui tarkistamalla saltin version komennolla ````$ 
 
 ## B & C) Viisi tärkeintä + idempotenssi
 
-Teron [artikkelin](https://terokarvinen.com/2021/salt-run-command-locally/) mukaan viisi tärkeintä idempotentin tilan funktiota Saltissa ovat pkg, file, service, user ja cmd.run. Idempotenssilla tarkoitetaan sitä, että määrittelemme järjestelmän tavoitetilan, johon sen tulee pyrkiä. Jos tavoitetila on jo saavutettu, kokoonpanoon ei tehdä muutoksia. 
+Teron [artikkelin](https://terokarvinen.com/2021/salt-run-command-locally/)[2] mukaan viisi tärkeintä idempotentin tilan funktiota Saltissa ovat pkg, file, service, user ja cmd.run. Idempotenssilla tarkoitetaan sitä, että määrittelemme järjestelmän tavoitetilan, johon sen tulee pyrkiä. Jos tavoitetila on jo saavutettu, kokoonpanoon ei tehdä muutoksia. 
 
 Testasin kaikkia viittä paikallisesti. 
 
@@ -179,10 +179,9 @@ Seuraavaksi loin /tmp/moro-tiedoston Saltilla:
 
 ![Add file: moro moro](/img/file-managed.png)
 
-File created, succeeded 1, changed 1. Tiedosto luotu ja toiminto onnistunut. Tyhjä tiedosto on tosin tylsä, joten lisäsin sinne sisältöä ja luin ne catilla.
+File created, succeeded 1, changed 1. Tiedosto luotu ja toiminto onnistunut. Tyhjä tiedosto on tosin tylsä, joten lisäsin sinne sisältöä.
 
     $ sudo salt-call --local -l info state.single file.managed /tmp/moro contents="No moro moro!"
-    $ cat /tmp/moro
 
 ![Add file: moro päivitetty](/img/file-updated.png)
 
@@ -198,7 +197,23 @@ Cmd.runilla voidaan ajaa tietty komento. Cmd.run on määriteltävä idempotenti
 
 Ensimmäisellä suorituskerralla tiedosto luotiin sisällöllä "olen seeämdee run" (changed=1). Toisella suorituskerralla tiedosto löytyi jo, eikä muutoksia tehty. 
 
+
+## D) Tietoa koneesta
+
+Komento ````$ sudo salt-call --local grains.items```` tulosti listan virtuaalikoneen tiedoista. Listattuna oli tietoja käyttöjärjestelmästä, laitteen raudasta, saltista ja monesta muusta asiasta. 
+
+VirtualBox nousi useampaan kenttään(biosversion, boardname, productname, virtual). Näissä ei ilmeisesti edes yritetä virtualisoida isäntälaitteen tietoja, vaan käytetään sen sijaan VirtualBoxia. 
+
+Pythonista oli kerätty versiotietojen lisäksi muutamia eri polkuja. Oletan tämän pohjalta, että Pythonia hyödynnetään jotenkin saltin käytössä. 
+
+Virtualisoinnissa annetut resurssit näyttivät täsmäävän hyvin grains.items:llä listattuihin tietoihin:
+ - cpu_model: i7-6700k
+ - mem_total: 7940
+ - num_cpus: 4
+
+
 ## Lähteet
 
-Tero Karvinen, 2023. Infra as Code 2023. Luettavissa https://terokarvinen.com/2023/configuration-management-2023-autumn/
-Tero Karvinen, 2021. Run Salt Command Locally. Luettavissa: https://terokarvinen.com/2021/salt-run-command-locally/
+[1]Tero Karvinen, 2023. Infra as Code 2023. Luettavissa https://terokarvinen.com/2023/configuration-management-2023-autumn/
+
+[2]Tero Karvinen, 2021. Run Salt Command Locally. Luettavissa: https://terokarvinen.com/2021/salt-run-command-locally/
