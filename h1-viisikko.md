@@ -65,7 +65,7 @@ Lähde: Tero Karvinen, 2021. Run Salt Command Locally. Luettavissa: https://tero
 
 ## A) Saltin-minionin asennus koneelle
 
-Viikkotehtäviä varten asensin tuoreen kopion Debian12:sta (12.2.0-amd64-xcfe) VirtualBoxiin. 
+Viikkotehtäviä varten asensin tuoreen kopion Debian12:sta (12.2.0-amd64-xfce) VirtualBoxiin. 
     
     Isäntälaitteen tiedot:
     OS: Windows 10
