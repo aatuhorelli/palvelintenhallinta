@@ -202,11 +202,12 @@ Ensimmäisellä suorituskerralla tiedosto luotiin sisällöllä "olen seeämdee 
 
 Komento ````$ sudo salt-call --local grains.items```` tulosti listan virtuaalikoneen tiedoista. Listattuna oli tietoja käyttöjärjestelmästä, laitteen raudasta, saltista ja monesta muusta asiasta. 
 
-VirtualBox nousi useampaan kenttään(biosversion, boardname, productname, virtual). Näissä ei ilmeisesti edes yritetä virtualisoida isäntälaitteen tietoja, vaan käytetään sen sijaan VirtualBoxia. 
+VirtualBox nousi useampaan kenttään(biosversion, boardname, productname, virtual). Näissä isäntälaitteen raudan tiedot eivät välity virtuaalilaitteelle, vaan ne virtualisoidaan laitteella VirtualBox.
 
 Pythonista oli kerätty versiotietojen lisäksi muutamia eri polkuja. Oletan tämän pohjalta, että Pythonia hyödynnetään jotenkin saltin käytössä. 
 
-Virtualisoinnissa annetut resurssit näyttivät täsmäävän hyvin grains.items:llä listattuihin tietoihin:
+Virtualisoinnissa annetut isäntälaitteen resurssit näyttivät täsmäävän hyvin grains.items:llä listattuihin tietoihin. VirtualBoxista virtuaalikoneen käyttöön annettu 4 prosessorin ydintä ja 8GB keskusmuistia. 
+
  - cpu_model: i7-6700k
  - mem_total: 7940
  - num_cpus: 4
