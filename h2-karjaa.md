@@ -208,7 +208,7 @@ Orjien avaimet olivat listattuna, eli ne olivat tavoitelleet herraa. Hyväksyin 
     t001:
         True
 
-Molemmat vastasivat True, eli linjoilla ovat.
+Molemmat vastasivat True, eli linjoilla olivat.
 
 
 ## e) Idempotentit komennot verkon yli
