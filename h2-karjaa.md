@@ -40,7 +40,9 @@ Aloitin lisäämällä Debian Backportsin paketinhallintaan:
     ..
 
 
-    $ sudo apt install fasttrack-archive-keyring
+    $ sudo apt install fasttrack-archive-keyring # fasttrack archiven keyringin asennus
+
+Yritin selvittää, mikä keyringien tarkoitus on. Googlen avulla löysin oikean manpages-sivun: ````$ man apt-secure````, jonka mukaan keyringit ovat osa repositorioiden turvallisen julkaisemisen ketjua.
 
 Lisäsin Fast Trackin paketinhallintaan avaamalla sources.list-tiedoston komennolla ````$ sudoedit /etc/apt/sources.list```` ja lisäämällä sinne seuraavat rivit:
 
@@ -65,6 +67,77 @@ Ajattelin testata nettiyhteyden toimintaa curlilla, mutta sitä ei tullut asennu
 ![Add file: vagrant ping](/img/vagrant_ping.png)
 
 ## c) Oma orjansa
+
+Saltista ei ole vielä omaa versiota Debian 12:lle, joten suoritin asennuksen samaan tapaan kuin viime viikolla [terokarvinen.com](https://terokarvinen.com/2023/configuration-management-2023-autumn/)-sivuston H1-osan vinkkiosion ohjeiden mukaisesti. Loin tiedoston salt-asennus.sh, johon syötin seuraavat rivit, minkä jälkeen ajoin tiedoston komennolla ````$ bash salt-asennus.sh````. 
+
+    sudo mkdir /etc/apt/keyrings # ei haittaa vaikka sanoisi etta hakemisto on jo
+    sudo curl -fsSL -o /etc/apt/keyrings/salt-archive-keyring-2023.gpg https://repo.saltproject.io/salt/py3/debian/11/amd64/SALT-PROJECT-GPG-PUBKEY-2023.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/salt-archive-keyring-2023.gpg arch=amd64] https://repo.saltproject.io/salt/py3/debian/11/amd64/latest bullseye main" | sudo tee /etc/apt/sources.list.d/salt.list
+    sudo apt-get update
+    sudo apt-get install salt-minion
+
+![Add file: minionin asennus)(/img/salt_bookwork_asennus.png)
+
+Testasin orjan asennuksen onnistumisen:
+
+    $ salt-minion --version
+    salt-minion 3006.4 (Sulfur) # Versio 3006.4 asennettu
+
+Salt-master piti vielä asentaa. Käytin asennuksessa hyväksi salt-minionin paikallisia komentoja. 
+
+    $ salt-call --local -l info state.single pkg.installed salt-master
+    [...]
+    Local:
+    ----------
+          ID: salt-master 
+    Function: pkg.installed
+      Result: True # toiminnon jälkeen salt-master löytyy
+     Comment: The following packages were installed/updated: salt-master # paketti asennettu
+     Started: 22:05:19.273632
+    Duration: 4399.297 ms
+     Changes:   
+              ----------
+              salt-master:
+                  ----------
+                  new:
+                      3006.4 # asennettu versio
+                  old:
+                            # ei vanhaa versiota, eli salt-masteria ei aiemmin ollut
+    Summary for local
+    ------------
+    Succeeded: 1 (changed=1) # toiminto onnistunut, yksi muutos kokoonpanoon tehty 
+    Failed:    0
+    ------------
+    Total states run:     1
+    Total run time:   4.399 s
+
+
+Testasin vielä, että salt-master on asentunut komennolla ````$ sudo salt-keys````, joka tulostaa listan orjien avaimista. Lista tulostui ymmärrettävästä syystä vielä tyhjänä, mutta komento kuitenkin toimi. Asennus oli onnistunut. Seuraavaksi jatkoin [Salt Quickstart - Tero Karvinen](https://terokarvinen.com/2018/salt-quickstart-salt-stack-master-and-slave-on-ubuntu-linux/?fromSearch=salt%20master) ohjeen mukaisesti kertomaan orjalle, mistä osoitteesta herraa tulee tavoitella muokkaamalla /etc/salt/minion-tiedostoa. 
+
+    $ hostname -I
+    192.168.50.100 # koneen ip-osoite
+    $ sudoedit /etc/salt/minion 
+    master: 192.168.50.100 # tavoiteltava ip-osoite
+    id: kotiorja # orjan nimi 
+    $ sudo systemctl restart salt-minion
+
+Orjan tulisi uudelleenkäynnistyksen jälkeen tavoitella herraa, mutta näin ei käynyt. ````$ sudo salt-key```` -listaan ei tulostunut kotiorjaa. Päätin kokeilla vaihtaa herran ip-osoitteeksi 127.0.0.1, jos se toimisi paremmin. Ei vaikutusta. Käynnistin vielä molemmat demonit uudelleen, minkä jälkeen kotiorja lähti soittelemaan herralle. 
+
+    $ sudo systemctl restart salt-master
+    $ sudo systemctl restart salt-minion
+    $ sudo salt-key
+    Accepted Keys:
+    Denied Keys:
+    Unaccepted Keys:
+    kotiorja # kotiorja yrittänyt yhteyttä, mutta avain hyväksymättä
+    Rejected Keys:
+    $ sudo salt-key -A # kotiorjan avaimen hyväksyntä
+    
+    $ sudo salt '*' test.ping # testataan, vastaako orja
+    kotiorja:
+        True # vastaa, eli toimii
+
+
 
 ## d) Herra-orja arkkitehtuuri verkon yli
 
