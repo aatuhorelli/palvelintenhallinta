@@ -76,7 +76,7 @@ Saltista ei ole vielä omaa versiota Debian 12:lle, joten suoritin asennuksen sa
     sudo apt-get update
     sudo apt-get install salt-minion
 
-![Add file: minionin asennus)(/img/salt_bookwork_asennus.png)
+![Add file: minionin asennus](/img/salt_bookworm_asennus.png)
 
 Testasin orjan asennuksen onnistumisen:
 
@@ -121,7 +121,11 @@ Testasin vielä, että salt-master on asentunut komennolla ````$ sudo salt-keys`
     id: kotiorja # orjan nimi 
     $ sudo systemctl restart salt-minion
 
-Orjan tulisi uudelleenkäynnistyksen jälkeen tavoitella herraa, mutta näin ei käynyt. ````$ sudo salt-key```` -listaan ei tulostunut kotiorjaa. Päätin kokeilla vaihtaa herran ip-osoitteeksi 127.0.0.1, jos se toimisi paremmin. Ei vaikutusta. Käynnistin vielä molemmat demonit uudelleen, minkä jälkeen kotiorja lähti soittelemaan herralle. 
+Orjan tulisi uudelleenkäynnistyksen jälkeen tavoitella herraa, mutta näin ei käynyt. ````$ sudo salt-key```` -listaan ei tulostunut kotiorjaa.
+
+![Add file: salt kokeilu](/img/salt_kokeilu.png)
+
+Päätin kokeilla vaihtaa herran ip-osoitteeksi 127.0.0.1, jos se toimisi paremmin. Ei vaikutusta. Käynnistin vielä molemmat demonit uudelleen, minkä jälkeen kotiorja lähti soittelemaan herralle. 
 
     $ sudo systemctl restart salt-master
     $ sudo systemctl restart salt-minion
@@ -137,9 +141,75 @@ Orjan tulisi uudelleenkäynnistyksen jälkeen tavoitella herraa, mutta näin ei 
     kotiorja:
         True # vastaa, eli toimii
 
+![Add file: kotiorja soittelee](/img/kotiorja_vastaa.png)
 
 
 ## d) Herra-orja arkkitehtuuri verkon yli
+
+Minulla lojui lähes käyttämättömänä Linoden palvelin, jonka ajattelin soveltuvan hyvin herran tehtäviin. Kävin asentamassa salt-masterin edellisen kohdan mukaisesti ja avasin palomuuriin reiät porteille 4505/tcp ja 4506/tcp komennoilla ````$ sudo ufw allow 4505/tcp```` ja ````$ sudo ufw allow 4506/tcp````. Tämän jälkeen varmistin salt-masterin demonin olevan käynnissä ````$ sudo systemctl restart salt-master````. 
+
+Loin Tero Karvisen [ohjeen](https://terokarvinen.com/2023/salt-vagrant/) mukaisen Vagrantfilen, josta poistin masteriin liittyvät tiedot, koska sellainen pyöri jo vuokratulla palvelimella. Masterin ip-osoitteeksi määritin palvelimen IP-osoitteen. 
+
+Tiedoston sisältö:
+
+    # -*- mode: ruby -*-
+    # vi: set ft=ruby :
+    # Copyright 2014-2023 Tero Karvinen http://TeroKarvinen.com
+
+    $minion = <<MINION
+    sudo apt-get update
+    sudo apt-get -qy install salt-minion
+    echo "master: xxx.xxx.xxx.xxx">/etc/salt/minion
+    sudo service salt-minion restart
+    echo "See also: https://terokarvinen.com/2023/salt-vagrant/"
+    MINION
+
+    Vagrant.configure("2") do |config|
+	    config.vm.box = "debian/bullseye64"
+
+	    config.vm.define "t001" do |t001|
+		    t001.vm.provision :shell, inline: $minion
+		    t001.vm.network "private_network", ip: "192.168.12.100"
+		    t001.vm.hostname = "t001"
+	    end
+
+	    config.vm.define "t002" do |t002|
+		    t002.vm.provision :shell, inline: $minion
+		    t002.vm.network "private_network", ip: "192.168.12.102"
+		    t002.vm.hostname = "t002"
+	    end
+    end
+
+
+Tämän jälkeen ajoin komennon ````$ vagrant up````, mutta seuraavanlainen virheilmoitus katkaisi prosessin:
+
+    The IP address configured for the host-only network is not within the
+    allowed ranges. Please update the address used to be within the allowed
+    ranges and run the command again.
+
+      Address: 192.168.12.100
+      Ranges: 192.168.56.0/21
+
+Virheilmoitus viittasi minun yrittäneen määrittää osoitteet orjille vääränlaisesta ip-avaruudesta. Ajoin varmuuden vuoksi komennon ````$ vagrant destroy```` poistaakseni mahdollisesti väärin pystytetyt virtuaalikoneet. Kävin laskemassa [IP Subnet Calculatorilla](https://www.calculator.net/ip-subnet-calculator.html?cclass=any&csubnet=21&cip=192.168.56.0&ctype=ipv4&x=Calculate) sopivan osoiteavaruuden ja annoin sieltä IP-osoitteet koneille Vagrantfileen. 
+
+![Add file: subnet calculator](/img/subnet.png)
+
+![Add file: uudet ip:t](/img/orjia_2.png)
+
+Tämän jälkeen pystytin onnistuneesti koneet komennolla ````$ vagrant up````. Asennuksen valmistuttua kävin tarkistamassa herran puolelta, että orjat olivat yrittäneet tavoitella sitä. 
+
+![Add file: nettiorjat toimii](/img/orjat_soittelee_taas.png)
+
+Orjien avaimet olivat listattuna, eli ne olivat tavoitelleet herraa. Hyväksyin avaimet ja testasin lopuksi, että orjat vastaavat pingiin.
+
+    aatu@localhost:~$ sudo salt '*' test.ping
+    t002:
+        True 
+    t001:
+        True
+
+Molemmat vastasivat True, eli linjoilla ovat.
+
 
 ## e) Idempotentit komennot verkon yli
 
