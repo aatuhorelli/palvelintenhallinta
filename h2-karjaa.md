@@ -112,7 +112,7 @@ Salt-master piti vielä asentaa. Käytin asennuksessa hyväksi salt-minionin pai
     Total run time:   4.399 s
 
 
-Testasin vielä, että salt-master on asentunut komennolla ````$ sudo salt-keys````, joka tulostaa listan orjien avaimista. Lista tulostui ymmärrettävästä syystä vielä tyhjänä, mutta komento kuitenkin toimi. Asennus oli onnistunut. Seuraavaksi jatkoin [Salt Quickstart - Tero Karvinen](https://terokarvinen.com/2018/salt-quickstart-salt-stack-master-and-slave-on-ubuntu-linux/?fromSearch=salt%20master) ohjeen mukaisesti kertomaan orjalle, mistä osoitteesta herraa tulee tavoitella muokkaamalla /etc/salt/minion-tiedostoa. 
+Testasin vielä, että salt-master on asentunut komennolla ````$ sudo salt-key````, joka tulostaa listan orjista, jotka ovat tavoitelleet herraa. Lista tulostui ymmärrettävästä syystä vielä tyhjänä, mutta komento kuitenkin toimi. Asennus oli onnistunut. Seuraavaksi jatkoin [Salt Quickstart - Tero Karvinen](https://terokarvinen.com/2018/salt-quickstart-salt-stack-master-and-slave-on-ubuntu-linux/?fromSearch=salt%20master) ohjeen mukaisesti kertomaan orjalle, mistä osoitteesta herraa tulee tavoitella muokkaamalla /etc/salt/minion-tiedostoa. 
 
     $ hostname -I
     192.168.50.100 # koneen ip-osoite
@@ -190,7 +190,7 @@ Tämän jälkeen ajoin komennon ````$ vagrant up````, mutta seuraavanlainen virh
       Address: 192.168.12.100
       Ranges: 192.168.56.0/21
 
-Virheilmoitus viittasi minun yrittäneen määrittää osoitteet orjille vääränlaisesta ip-avaruudesta. Ajoin varmuuden vuoksi komennon ````$ vagrant destroy```` poistaakseni mahdollisesti väärin pystytetyt virtuaalikoneet. Kävin laskemassa [IP Subnet Calculatorilla](https://www.calculator.net/ip-subnet-calculator.html?cclass=any&csubnet=21&cip=192.168.56.0&ctype=ipv4&x=Calculate) sopivan osoiteavaruuden ja annoin sieltä IP-osoitteet koneille Vagrantfileen. 
+Virheilmoitus viittasi minun yrittäneen määrittää osoitteet orjille vääränlaisesta IP-osoiteavaruudesta. Ajoin varmuuden vuoksi komennon ````$ vagrant destroy```` poistaakseni mahdollisesti väärin pystytetyt virtuaalikoneet. Totesin helpommaksi lähestymistavaksi muokata IP-osoitteita kuin käydä etsimässä asetus, josta voin muokata aliverkon peitettä. Kävin laskemassa [IP Subnet Calculatorilla](https://www.calculator.net/ip-subnet-calculator.html?cclass=any&csubnet=21&cip=192.168.56.0&ctype=ipv4&x=Calculate) sopivan osoiteavaruuden ja annoin sieltä IP-osoitteet koneille Vagrantfileen. 
 
 ![Add file: subnet calculator](/img/subnet.png)
 
@@ -213,8 +213,218 @@ Molemmat vastasivat True, eli linjoilla olivat.
 
 ## e) Idempotentit komennot verkon yli
 
+Komensin herran kautta orjia asentamaan Apache2:n. 
+
+	aatu@localhost:~$ sudo salt '*' state.single pkg.installed apache2 enable=True
+	t002:
+	----------
+          ID: apache2
+    Function: pkg.installed
+      Result: True
+     Comment: The following packages were installed/updated: apache2
+     Started: 07:16:55.112073
+    Duration: 6753.071 ms
+     Changes:   
+              ----------
+              apache2:
+                  ----------
+                  new:
+                      2.4.56-1~deb11u2
+                  old:
+              apache2-bin:
+                  ----------
+                  new:
+                      2.4.56-1~deb11u2
+                  old:
+              apache2-data:
+                  ----------
+                  new:
+                      2.4.56-1~deb11u2
+                  old:
+              apache2-utils:
+                  ----------
+                  new:
+                      2.4.56-1~deb11u2
+                  old:
+              libapr1:
+                  ----------
+                  new:
+                      1.7.0-6+deb11u2
+                  old:
+              libaprutil1:
+                  ----------
+                  new:
+                      1.6.1-5+deb11u1
+                  old:
+              libaprutil1-dbd-sqlite3:
+                  ----------
+                  new:
+                      1.6.1-5+deb11u1
+                  old:
+              libaprutil1-ldap:
+                  ----------
+                  new:
+                      1.6.1-5+deb11u1
+                  old:
+              libcurl4:
+                  ----------
+                  new:
+                      7.74.0-1.3+deb11u10
+                  old:
+              liblua5.3-0:
+                  ----------
+                  new:
+                      5.3.3-1.1+deb11u1
+                  old:
+              ssl-cert:
+                  ----------
+                  new:
+                      1.1.0+nmu1
+                  old:
+
+	Summary for t002
+	------------
+	Succeeded: 1 (changed=1)
+	Failed:    0
+	------------
+	Total states run:     1
+	Total run time:   6.753 s
+	t001:
+	----------
+          ID: apache2
+    Function: pkg.installed
+      Result: True
+     Comment: The following packages were installed/updated: apache2
+     Started: 07:16:55.106651
+    Duration: 6925.417 ms
+     Changes:   
+              ----------
+              apache2:
+                  ----------
+                  new:
+                      2.4.56-1~deb11u2
+                  old:
+              apache2-bin:
+                  ----------
+                  new:
+                      2.4.56-1~deb11u2
+                  old:
+              apache2-data:
+                  ----------
+                  new:
+                      2.4.56-1~deb11u2
+                  old:
+              apache2-utils:
+                  ----------
+                  new:
+                      2.4.56-1~deb11u2
+                  old:
+              libapr1:
+                  ----------
+                  new:
+                      1.7.0-6+deb11u2
+                  old:
+              libaprutil1:
+                  ----------
+                  new:
+                      1.6.1-5+deb11u1
+                  old:
+              libaprutil1-dbd-sqlite3:
+                  ----------
+                  new:
+                      1.6.1-5+deb11u1
+                  old:
+              libaprutil1-ldap:
+                  ----------
+                  new:
+                      1.6.1-5+deb11u1
+                  old:
+              libcurl4:
+                  ----------
+                  new:
+                      7.74.0-1.3+deb11u10
+                  old:
+              liblua5.3-0:
+                  ----------
+                  new:
+                      5.3.3-1.1+deb11u1
+                  old:
+              ssl-cert:
+                  ----------
+                  new:
+                      1.1.0+nmu1
+                  old:
+
+	Summary for t001
+	------------
+	Succeeded: 1 (changed=1)
+	Failed:    0
+	------------
+	Total states run:     1
+	Total run time:   6.925 s
+	aatu@localhost:~$ 
+
+Molemmat orjat ilmoittivat, että toiminto onnistui asentamalla apache2 (packages installed/updated: apache2 / Succeeded: 1 (changed=1)). Saman komennon ajaminen toiseen kertaan palautti orjilta vastauksen (Comment: All specified packages are already installed). Varmistin vielä, että Apache2:n demoni pyörii komennolla ````$ sudo salt '*' state.single service.running apache2````.
+
+		ID: apache2
+    	Function: service.running
+      	Result: True 
+     	Comment: The service apache2 is already running # demoni oli valmiiksi päällä
+     	Started: 07:21:44.582546
+    	Duration: 27.055 ms
+		Changes:   
+
+Päätin korvata Apachen index.html-tiedoston sisällön ja lukea sen catilla. 
+
+	$ sudo salt '*' state.single file.managed /var/www/html/index.html contents="tieto koneen weppi palvelimen etu sivu terve tuloa"
+ 	$ sudo salt '*' state.single cmd.run 'cat /var/www/html/index.html'
+
+![Add file: salt cat](/img/salt_cat.png)
+
+Asensin vielä curlin, varmistin Apachen olevan päällä ja tarkistin, että etusivu oli korvattu uudella sisällöllä.
+
+	$ sudo salt '*' state.single pkg.installed curl # palautti Succeeded 1, changed 1 --> curl asennettu
+ 	$ sudo salt '*' state.single service.running apache2 # Already running, Succeeded 1 --> Demoni käynnissä
+  	$ sudo salt '*' state.single cmd.run 'curl localhost'
+   	[...]
+                  stdout:
+                  tieto koneen weppi palvelimen etu sivu terve tuloa # vastasi odotuksia, tiedoston sisältö korvattu
+	[...] 	
+
+
 ## f) Grains
 
+Grains kerää tietoa orjista. Halusin varmistaa, että virtuaalikoneen pystytyksessä määritetyt asetukset vastasivat odotuksia (käyttöjärjestelmä debian/bullseye64, IP-osoitteet samat kuin asetustiedostossa). Minua kiinnosti myös, paljonko keskusmuistia ja prosessorin ytimiä koneille oli annettu käyttöön. Ajoin ensin komennon ````$ sudo salt '*' grains.items````, joka listaa käsittääkseni kaiken grainsilla irti saatavan tiedon orjista. Valitsin näistä itseäni kiinnostavat tiedot erilliseen kyselyyn.
+
+
+	$ sudo salt '*' grains.item cpu_model num_cpus mem_total lsb_distrib_description osarch ipv4
+	t002:
+    	----------
+    	cpu_model:
+        	Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
+    	ipv4:
+        	- 10.0.2.15
+        	- 127.0.0.1
+        	- 192.168.56.3 # IP-osoite vastaa määrityksiä
+	
+ 	lsb_distrib_description:
+        Debian GNU/Linux 11 (bullseye) # debian/bullseye64
+
+    	mem_total:
+        	461 # 461Mt, ~0.5Gt muistia
+    	num_cpus:
+        	2 # Kaksi ydintä käytössä
+    	osarch:
+        	amd64
+	t001:
+    	----------
+	[...]
+        	- 192.168.56.2 # IP-osoite vastaa määrityksiä
+	[...]
+
+
 ## g) Shell-komento verkon yli
+
+
 
 ## h) Hello IaC
