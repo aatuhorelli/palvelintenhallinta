@@ -495,4 +495,15 @@ Tiedostossa /tmp/kello oli timedatectl:n sisältö ensimmäisen komennon ajamise
 
 ## h) Hello IaC
 
+Seurasin [artikkelin](https://terokarvinen.com/2023/salt-vagrant/) ohjeita niitä hieman mukaillen. Määritin /srv/salt/hello/init.sls modulin hello, joka luo tiedoston /tmp/hello sisällöllä "Hello world!". /srv/salt/top.sls tiedostossa määrittelin, että komento ajetaan vain orjalle t002. 
 
+![Add file: IaC](/img/init_t002.png)
+
+Tiedostojen init.sls ja top.sls sisältö kuvankaappauksen lopussa. t001 palautti virheen, koska se ei löytänyt itselleen määriteltyjä tehtäviä. t002 loi onnistuneesti tiedoston, jonka luku onnistui komennolla ````$ sudo salt '*' state.single cmd.run 'cat /tmp/hello'````.
+
+	t002: 
+ 	stdout:
+  		Hello world! # Tiedosto löytyy ja sisältö luettu
+	t001:
+	stderr: 
+		cat: /tmp/hello: No such file or directory # Tiedostoa ei löydy, kuten ei kuuluisikaan
