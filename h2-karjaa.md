@@ -425,6 +425,74 @@ Grains kerää tietoa orjista. Halusin varmistaa, että virtuaalikoneen pystytyk
 
 ## g) Shell-komento verkon yli
 
+Ajoin saltilla yksinkertaisen shell-komennon, joka tarkistaa kirjoittaa timedatectl:n tiedot tiedostoon /tmp/kello. Jos tiedosto on jo olemassa, ei tehdä mitään. 
 
+	$ sudo salt '*' state.single cmd.run 'timedatectl > /tmp/kello' creates="/tmp/kello"
+	t002:
+	----------
+          ID: timedatectl > /tmp/kello
+    Function: cmd.run
+      Result: True
+     Comment: Command "timedatectl > /tmp/kello" run
+     Started: 10:37:55.980224
+    Duration: 1087.421 ms
+     Changes:   
+              ----------
+              pid:
+                  1127
+              retcode:
+                  0
+              stderr:
+              stdout:
+
+	Summary for t002
+	------------
+	Succeeded: 1 (changed=1)
+	Failed:    0
+	------------
+	Total states run:     1
+	Total run time:   1.087 s
+	t001:
+	----------
+       	   ID: timedatectl > /tmp/kello
+    	Function: cmd.run
+      	Result: True
+     	Comment: Command "timedatectl > /tmp/kello" run
+     	Started: 10:37:55.980053
+    	Duration: 1098.474 ms
+     	Changes:   
+              ----------
+              pid:
+                  1092
+              retcode:
+                  0
+              stderr:
+              stdout:
+
+	Summary for t001
+	------------
+	Succeeded: 1 (changed=1) # tiedfosto luotu
+	Failed:    0
+	------------
+	Total states run:     1
+	Total run time:   1.098 s
+
+Komennon uudestaan ajaminen palauttaa Succeeded: 1, /tmp/kello already exists. Muutoksia ei tehty, koska tiedosto oli jo olemassa. Laitoin orjat vielä lukemaan tiedoston catilla:
+
+	$ sudo salt '*' state.single cmd.run 'cat /tmp/kello'
+ 	[...]
+		stdout:
+                                 Local time: Mon 2023-11-06 10:37:57 UTC
+                             Universal time: Mon 2023-11-06 10:37:57 UTC
+                                   RTC time: Mon 2023-11-06 10:37:58
+                                  Time zone: Etc/UTC (UTC, +0000)
+                  System clock synchronized: yes
+                                NTP service: active
+                            RTC in local TZ: no
+	[...]
+
+Tiedostossa /tmp/kello oli timedatectl:n sisältö ensimmäisen komennon ajamisen hetkeltä. 
 
 ## h) Hello IaC
+
+
