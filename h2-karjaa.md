@@ -3,6 +3,104 @@ Tehtävänannot luettavissa https://terokarvinen.com/2023/configuration-manageme
 
 ## x) Lue ja tiivistä
 
+### What is the definition of "cattle not pets"?
+
+- Randy Biasin muunnelma Bill Bakerin analogiasta palvelimiin suhtautumisesta
+  - Lemmikit(pets): Palvelimet ovat korvaamattomia ja niiden vikaantuessa palvelut eivät toimi. Yleensä käsin rakennettuja ja ylläpidettyjä palvelimia, jotka eivät saa kaatua.
+  - Cattle(karja): Automaattisilla työkaluilla pystytettyjä ja hallinnoituja palvelimia, jotka voidaan vikatilanteen sattuessa nopeasti poistaa käytöstä ja korvata toisella palvelimella. Vikatilanteet hoituvat usein itsestään ilman ihmisen puuttumista tilanteeseen.
+ 
+Lähde: https://devops.stackexchange.com/questions/653/what-is-the-definition-of-cattle-not-pets#654
+
+### Vagrant Revisited - Install & Boot New Virtual Machine in 31 seconds
+
+- Vagrantin avulla voidaan asentaa nopeasti ja automaattisesti virtuaalikoneita
+- Vagrantin ja VirtualBoxin asennus:
+```
+$ sudo apt-get update
+$ sudo apt-get -y install vagrant virtualbox
+```
+- Virtuaalikoneen alustus, käynnistäminen ja ssh-yhteyden muodostaminen:
+
+```
+$ vagrant init bento/ubuntu-16.04
+$ vagrant up
+$ vagrant ssh
+```
+
+- Virtuaalikoneen tuhoaminen: ```$ vagrant destroy```
+
+Lähde: https://terokarvinen.com/2017/04/11/vagrant-revisited-install-boot-new-virtual-machine-in-31-seconds/
+
+
+### Salt Vagrant - automatically provision one master and two slaves
+
+- Konfiguraation hallinta mahdollista jo ennen virtuaalikoneen pystyttämistä
+- Kahden orjan ja herran pystyttäminen Vagrantfile-tiedoston avulla:
+
+```
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# Copyright 2014-2023 Tero Karvinen http://TeroKarvinen.com
+
+$minion = <<MINION
+sudo apt-get update
+sudo apt-get -qy install salt-minion
+echo "master: 192.168.12.3">/etc/salt/minion
+sudo service salt-minion restart
+echo "See also: https://terokarvinen.com/2023/salt-vagrant/"
+MINION
+
+$master = <<MASTER
+sudo apt-get update
+sudo apt-get -qy install salt-master
+echo "See also: https://terokarvinen.com/2023/salt-vagrant/"
+MASTER
+
+Vagrant.configure("2") do |config|
+	config.vm.box = "debian/bullseye64"
+
+	config.vm.define "t001" do |t001|
+		t001.vm.provision :shell, inline: $minion
+		t001.vm.network "private_network", ip: "192.168.12.100"
+		t001.vm.hostname = "t001"
+	end
+
+	config.vm.define "t002" do |t002|
+		t002.vm.provision :shell, inline: $minion
+		t002.vm.network "private_network", ip: "192.168.12.102"
+		t002.vm.hostname = "t002"
+	end
+
+	config.vm.define "tmaster", primary: true do |tmaster|
+		tmaster.vm.provision :shell, inline: $master
+		tmaster.vm.network "private_network", ip: "192.168.12.3"
+		tmaster.vm.hostname = "tmaster"
+	end
+end
+
+```
+ - Koneiden käynnistys: ```$ vagrant up```
+ - SSH-yhteyden muodostaminen: ```$ ssh [koneen nimi]```
+ - Avainten hyväksyminen herralla: ```$ sudo salt-key -A```
+ - Komentojen ajaminen orjilla. Idempotentit komennot tehokkaimpia: ````$ sudo salt '*' state.single [komento]```
+
+ - Infra as code. YAML syntaksi, joten sisennykset tärkeitä. Sisennys kahdella välilyönnillä.
+   - /srv/salt/[modulin_nimi]/init.sls -tiedostoon määritellään halutut tilat, esim:
+    ```
+     /tmp/infra-as-code:
+  	file.managed
+   ```
+   - /srv/salt/top.sls määritellään, mitä laitteita modulit koskevat. Esim:
+```
+base:
+  '*':
+    - hello
+```
+- ``$ sudo salt '*' state.apply`` ajaa modulit orjille
+
+
+Lähde: https://terokarvinen.com/2023/salt-vagrant/
+
 ## a) Vagrantin asennus
 Aiemmin olen käyttänyt Linuxia vain virtuaalikoneissa. Edellisellä luennolla mainittiin, että virtuaalikoneiden pyörittäminen sisäkkäin voi aiheuttaa yllättäviä ongelmia. Näiltä välttyäkseni asensin Windowsin rinnalle Debian 12:n. 
 
