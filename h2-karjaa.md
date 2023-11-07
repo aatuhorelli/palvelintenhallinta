@@ -154,7 +154,7 @@ Päivitin paketinhallinnan ````$ sudo apt update```` ja kokeilin asentaa Virtual
 
 Tämän jälkeen asennus onnistui komennolla ````$ sudo apt install virtualbox````. Lopuksi testasin, että Vagrant ja VirtualBox olivat asentuneet komennoilla ````$ vagrant```` ja ````$ virtualbox````. Vagrant palautti komennon käyttöohjeet ja VirtualBox aukesi, joten asennukset olivat onnistuneet.
 
-## b) Yksi maantiekiertäjä
+## b) Yksi maankiertäjä
 
 Loin ensin Vagrantille oman kansion kotihakemistooni ````$ mkdir /home/aatu/Vagrant```` ja ajoin siellä komennon ````$ vagrant init debian/bullseye64````, joka luo virtuaalikoneen asennukseen käytettävän Vagrantfile-nimisen tiedoston. Pystytin virtuaalikoneen komennolla ````$ vagrant up````. Noin minuutin asennuksen jälkeen vagrant ilmoitti asennuksen onnistuneen ja koneeseen pystyi muodostamaan yhteyden komennolla ````$ vagrant ssh````.
 
