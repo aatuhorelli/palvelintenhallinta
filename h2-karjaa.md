@@ -156,7 +156,7 @@ Tämän jälkeen asennus onnistui komennolla ````$ sudo apt install virtualbox``
 
 ## b) Yksi maantiekiertäjä
 
-Loin ensin Vagrantille oman kansion kotihakemistooni ````$ mkdir /home/aatu/Vagrant```` ja ajoin siellä komennon ````$ vagrant init debian/bullseye64````, joka virtuaalikoneen asennukseen käytettävän Vagrantfile-nimisen tiedoston. Pystytin virtuaalikoneen komennolla ````$ vagrant up````. Noin minuutin asennuksen jälkeen vagrant ilmoitti asennuksen onnistuneen ja koneeseen pystyi muodostamaan yhteyden komennolla ````$ vagrant ssh````.
+Loin ensin Vagrantille oman kansion kotihakemistooni ````$ mkdir /home/aatu/Vagrant```` ja ajoin siellä komennon ````$ vagrant init debian/bullseye64````, joka luo virtuaalikoneen asennukseen käytettävän Vagrantfile-nimisen tiedoston. Pystytin virtuaalikoneen komennolla ````$ vagrant up````. Noin minuutin asennuksen jälkeen vagrant ilmoitti asennuksen onnistuneen ja koneeseen pystyi muodostamaan yhteyden komennolla ````$ vagrant ssh````.
 
 ![Add file: vagrant pystyssä](/img/vagrant_2.png)
 
