@@ -22,7 +22,7 @@ Tehtävänannot luettavissa osoitteessa https://terokarvinen.com/2023/configurat
 ![Add file: ssh key](/img/ssh_avain.png)
 > SSH-avain lisätty. Merkkijono sanitoitu pois kuvasta.
 
-Ajoin /home/aatu/projektit -hakemistossa komennon ``$ git clone https://github.com/aatuhorelli/winterrepo.git``. Winterrepo kopioitui onnistuneesti. Siirryin hakemistoon komennolla ``$ cd winterrepo`` ja tarkistin vielä, että README.md:n sisältö oli oikea, ``$ cat README.md``.
+Ajoin /home/aatu/projektit -hakemistossa komennon ``$ git clone https://github.com/aatuhorelli/winterrepo.git``. Winterrepo kopioitui onnistuneesti, koska tiedostot uusi hakemisto kopioitui sisältöineen. Siirryin hakemistoon komennolla ``$ cd winterrepo`` ja tarkistin vielä, että README.md:n sisältö oli oikea, ``$ cat README.md``.
 
 ![Add file: kopioitu repo](/img/git_clone.png)
 > Repositorio kopioitu ja README.md-tiedoston sisältö on oikea.
