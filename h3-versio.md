@@ -73,7 +73,7 @@ Tutkin Gitin lokia komennolla ``$ git log --patch # Gitin commit-loki muutosten 
 
 ## F & G) Yhteistyötä eri käyttöjärjestelmillä
 
-Kone, jolla raporttia kirjoittelin tehtäviä tehdessä päätti Linuxille epäominaisesti kaatua, joten tehtävänanto perustuu prosessista otettuihin screenshotteihin ja ulkomuistiin.
+Kone, jolla raporttia kirjoittelin tehtäviä tehdessä päätti Linuxille epäominaisesti kaatua, joten rapotti perustuu prosessista otettuihin screenshotteihin ja ulkomuistiin.
 
 Alteregoni on Apple-fanaatikko, jolla on käytössään ARM-arkkitehtuurin M1 Pro -prosessorilla varustettu MacBook Pro. Käyttöjärjestelmä on macOS Sonoma 14.2. MacBookilla oli git jo asennettuna aiemmin, koska terminaali (cmd + space -> terminal -> enter) tunnisti komennon ``$ git``. 
 
@@ -87,3 +87,17 @@ Kutsun hyväksyttyäni kloonasin repositorion MacBookille. Kirjautumisessa käyt
 
 ![Add file: alterego clone](/img/alterego_clone.png)
 > Kansion luonti ja repositorion kopiointiprosessi
+
+Apple-fanaatikon elkein alteregoni koki tarpeelliseksi muokata helloworld.py-tiedoston tulostetta lisäämällä sinne yhden rivin ``$ micro helloworld.py # lisätty tekstieditorilla rivi: print("Created with APPLE MACBOOK PRO!!!!")``. Tämän jälkeen muokkasin ennaltaehkäisevästi alteregon nimen ja sähköpostiosoitteen commitia varten ``$ git config --global user.email "aatu.horelli@gmail.com``& ``$ git config --global user.name "Illeroh Utaa"``. Tein commitin: ``$ git commit # Kuvaus: Add crucial lines to print``, varmistin tiedostojen olevan tuoreimmassa versiossa ``$ git pull # already up to date`` ja siirsin muutokset repositorioon ``$ git push``. 
+
+![Add file: alterego push](/img/alterego_push.png)
+> Käyttäjän tietojen syöttyö, commit, pull ja push
+
+Uusi rivi ilmestyi näkyviin myös weppiliittymään. Järkytyin Apple-fanaatikon harkintakyvyn pettämisestä niin paljon, että kävin tiedoston normaaliksi palauttamisen yhteydessä poistamassa myös repositorion muokkausoikeudet. Repositorion omistajan toisen koneen terminaalista ajetut komennot: ``$ git pull # tiedostot ajan tasalle``, ``$ micro helloworld.py # rivin poisto``, ``$ git add . # lisätään tiedostot commitin piiriin``, ``$ git commit # kommentti: Reduce fanaticism``, ``$ git pull # tiedostot ajan tasalle siltä varalta, että muutoksia tehty samanaikaisesti muualla`` ja ``$ git push # korjattu tiedosto paikalleen``.
+
+Käyttäjän muokkausoikeuksien poisto repositoriosta onnistui GitHubin polusta winterrepo -> settings -> collaborators -> remove. 
+
+![Add file: fanaatikon poisto](/img/fanaatikon_poisto.png)
+> Apple-käyttäjät pois collaboratoreista
+
+Testasin vielä, mitä git ilmoittaa, jos koitan julkaista muutoksia MacBookin käyttäjällä. Hain tuoreimmat tiedostot komennolla ``$ git pull # 1 file changed, 1 deletion(-)``. Loin uuden tiedoston foo komennolla ``$ touch foo``, minkä jälkeen koitin työntää sen repositorioon ``$ git add .``, ``$ git commit # Add foo``, ``$ git pull`` ja ``$ git push # ERROR: Permission to aatuhorelli/winterrepo.git denied to horaat.``. Fanaatikko oli onnistuneesti laitettu jäähylle.
