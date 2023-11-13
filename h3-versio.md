@@ -32,7 +32,16 @@ Loin microlla uuden tiedoston helloworld.py ja kirjoitin sinne simppelin Hello w
 ![Add file: push_fail](/img/helloworld.png)
 > Commit-viestin sähköpostiosoite väärä
 
-Muistelin, ettei luennolla vastaavaa salasanan kyselyä ollut, joten otin toveri-ChatGPT:n apuun ja kysyin, miten kopioin Debianin terminaalista voimassaolevan repositorion. Selvisi, että olin unohtanut kopioidessa lisätä URLin eteen git@github.com-tunnuksen. Tämän lisääminen jälkeenpäin onnistuisi kuulemma komennolla ``$ git remote set-url origin git@github.com:käyttäjänimi/repositorio.git``. Muokkasin origin-urlia ja tein uuden pushin.
+Muistelin, ettei luennolla vastaavaa salasanan kyselyä ollut, joten otin toveri-[ChatGPT](https://chat.openai.com/):n apuun ja kysyin, miten kopioin Debianin terminaalista voimassaolevan repositorion. Selvisi, että olin unohtanut kopioidessa lisätä URLin eteen git@github.com-tunnuksen. Tämän lisääminen jälkeenpäin onnistuisi kuulemma komennolla ``$ git remote set-url origin git@github.com:käyttäjänimi/repositorio.git``. Muokkasin origin-urlia ja tein uuden pushin.
 
 ![Add file: push ok](/img/push_onnistui.png)
 >Push onnistunut. Tiedosto näkyy weppiliittymässä.
+
+## C) Doh!
+
+Päätin muokata helloworldia: ``$ micro helloworld.py``. Maanantai-aamun paha mieli ja edellisen yön huonot yöunet ottivat minusta vallan ja muutin tekstin painokelvottomaksi. Päätin lähteä työntämään muutoksia repositorioon: ``$ git add .``. Tässä vaiheessa tulin järkiini ja vihelsin pelin poikki ja peruin tehdyt muokkaukset komennolla ``$ git reset --hard``, jolla tiedosto palautettiin takaisin edellisen commitin tilaan. 
+
+![Add file: hard reset](/img/git_reset.png)
+>Tiedoston sisältö ennen ja jälkeen resetin
+
+Tiedoston sisältö oli myös weppiliittymästä tarkastellessa alkuperäisessä loistossaan.
