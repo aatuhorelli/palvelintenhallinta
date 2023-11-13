@@ -71,4 +71,19 @@ Tutkin Gitin lokia komennolla ``$ git log --patch # Gitin commit-loki muutosten 
       +                       Version 3, 29 June 2007 # Lisenssin versionti ja päiväys
     [...]
 
-## F) 
+## F & G) Yhteistyötä eri käyttöjärjestelmillä
+
+Kone, jolla raporttia kirjoittelin tehtäviä tehdessä päätti Linuxille epäominaisesti kaatua, joten tehtävänanto perustuu prosessista otettuihin screenshotteihin ja ulkomuistiin.
+
+Alteregoni on Apple-fanaatikko, jolla on käytössään ARM-arkkitehtuurin M1 Pro -prosessorilla varustettu MacBook Pro. Käyttöjärjestelmä on macOS Sonoma 14.2. MacBookilla oli git jo asennettuna aiemmin, koska terminaali (cmd + space -> terminal -> enter) tunnisti komennon ``$ git``. 
+
+Kutsuin winterrepon omistajan tunnuksella alteregoni repositorion collaboratoriksi (winterrepo -> Settings -> Collaborators -> Add people). Kutsutun käyttäjätunnuksen sähköpostiin lähti kutsulinkki, joka vei github.comin kirjautumissivun kautta kutsun tarkasteluun ja mahdolliseen hyväksyntään. Kirjauduin sisään toisella käyttäjätunnuksellani ja hyväksyin kutsun painamalla 'Accept invitation'. Tämän jälkeen winterrepo ilmestyi käyttäjän repositoriolistaukseen nimellä aatuhorelli/winterrepo
+
+![Add file: github kutsu](/img/github_kutsu.png)
+> Kutsulinkin sisältö
+
+
+Kutsun hyväksyttyäni kloonasin repositorion MacBookille. Kirjautumisessa käytettävän ssh-avaimen luominen onnistui samalla tavalla kuin Linuxissa: ``$ ssh-keygen # luo avaimen tiedostoon /$HOME/$USER/.ssh/.id_rsa.pub``. Lisäsin alteregon GitHub-tunnukselle SSH-avaimen (Settings -> SSH and GPG Keys -> New SSH key) liittämällä .id_rsa.pub-tiedostoon generoidun avaimen. Tämän jälkeen loin käyttäjän kotihakemistoon hakemiston 'projektit' komennolla ``$ mkdir projektit``ja siirryin sinne komennolla ``$ cd projektit``. Kopioin repositorion komennolla ``$ git clone git@github.com:aatuhorelli/winterrepo.git`` ja SSH:n kysellessä sormenjäljestä vastasin yes. Siirryin kopioituun hakemistoon ja tarkastin sen sisällön: ``$ cd winterrepo`` & ``$ ls``. Tiedostot vaikuttivat olevan oikeita.
+
+![Add file: alterego clone](/img/alterego_clone.png)
+> Kansion luonti ja repositorion kopiointiprosessi
