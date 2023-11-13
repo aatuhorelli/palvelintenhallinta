@@ -45,3 +45,30 @@ Päätin muokata helloworldia: ``$ micro helloworld.py``. Maanantai-aamun paha m
 >Tiedoston sisältö ennen ja jälkeen resetin
 
 Tiedoston sisältö oli myös weppiliittymästä tarkastellessa alkuperäisessä loistossaan.
+
+## D) Tukki
+
+Tutkin Gitin lokia komennolla ``$ git log --patch # Gitin commit-loki muutosten yhteenvedolla``. 
+
+
+    commit e8d558c894c3761d47975acd118db7d6a2cbf1ca (HEAD -> main, origin/main, origin/HEAD) # Commitille generoitu tunniste
+    Author: Aatu Horelli <aatu.horelli@myy.haaga-helia.fi> # Commitin tekijän nimi ja sähköposti
+    Date:   Mon Nov 13 11:11:40 2023 +0200 # Aikaleima
+
+        Add helloworld # Commit message
+
+    diff --git a/helloworld.py b/helloworld.py # tiedoston erojen listaus tästä eteenpäin
+    new file mode 100644 # uusi tiedosto
+    index 0000000..f1a1813 # jotain indeksitietoja
+    --- /dev/null            
+    +++ b/helloworld.py 
+    @@ -0,0 +1 @@ # Muutosten yhteenveto: 0 riviä poistettu, 1 rivi lisätty
+    +print("Hello world!") # lisätty rivi
+
+    commit c82fc97fdf0a864a107a08d7480b755134299e57 # Vastaavat tiedot lisenssitiedoston luomisesta
+    [...]
+      +                    GNU GENERAL PUBLIC LICENSE # Käytetty lisenssi
+      +                       Version 3, 29 June 2007 # Lisenssin versionti ja päiväys
+    [...]
+
+## F) 
