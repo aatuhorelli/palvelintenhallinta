@@ -71,7 +71,7 @@ Tutkin Gitin lokia komennolla ``$ git log --patch # Gitin commit-loki muutosten 
       +                       Version 3, 29 June 2007 # Lisenssin versionti ja päiväys
     [...]
 
-## F & G) Yhteistyötä eri käyttöjärjestelmillä
+## E & G) Yhteistyötä eri käyttöjärjestelmillä
 
 Kone, jolla raporttia kirjoittelin tehtäviä tehdessä päätti Linuxille epäominaisesti kaatua, joten rapotti perustuu prosessista otettuihin screenshotteihin ja ulkomuistiin.
 
