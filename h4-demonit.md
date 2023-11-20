@@ -388,13 +388,44 @@ d) SSHouto
 
 Seurasin tehtävässä [terokarvinen.com](https://terokarvinen.com/2018/04/03/pkg-file-service-control-daemons-with-salt-change-ssh-server-port/?fromSearch=karvinen%20salt%20ssh) ohjetta. 
 
-Aloitin kopioimalla /etc/ssh/sshd_config -tiedoston hakemistoon /srv/salt/ssh/ komennolla ``$ sudo cp /etc/ssh/sshd_config /srv/salt/``. Tämän jälkeen avasin kopioimani tiedoston sudoeditillä ``$ sudoedit /srv/salt/sshd_config`` ja muokkasin asetusta, jolla määritellään kuunneltava portti.
+Aloitin kopioimalla /etc/ssh/sshd_config -tiedoston hakemistoon /srv/salt/ssh/ komennolla ``$ sudo cp /etc/ssh/sshd_config /srv/salt/``. Tämän jälkeen avasin kopioimani tiedoston sudoeditillä ``$ sudoedit /srv/salt/sshd_config`` ja muokkasin asetusta, jolla määritellään kuunneltava portti. Herran palvelimella oli myös tietoturvasyistä "PermitRootLogin no", jonka kommentoin pois lisäämällä rivin eteen risuaidan (#), sillä kirjautumista yritettäisiin vakiona root-tunnuksella, enkä tiedä mitään muita käyttäjiä vagrantin ylläpitämiltä koneilta.
 
 
     aatu@localhost:/srv/salt/$ cat sshd_config | grep 8888
     Port 8888
+  
 
 Ajanpuutteen vuoksi en ehtinyt viritellä uutta virtuaalikonetta, joten poistin toiselta orjalta ssh:n komennolla ``$ sudo salt 't001' state.single pkg.removed openssh-server``. Tämän jälkeen ajoin orjia pyörittävällä isäntäkoneella komennon ``$ ssh 192.168.56.2 # t001 ip-osoite``, joka vastasi "Connection refused", eli ssh ei vastaa.
 
 [---- palautus tässä välissä keskeneräisenä ----]
 
+Tein ohjeen mukaisen sshd.sls-nimisen tiedoston tällaisella sisällöllä:
+
+    openssh-server:
+      pkg.installed
+
+    /etc/ssh/sshd_config:
+      file.managed:
+        - source: salt://sshd_config
+
+    sshd:
+      service.running:
+        - watch:
+          - file /etc/ssh/sshd_config # kaksoispiste jäi puuttumaan filen perästä, johti virheeseen.
+
+Tämän jälkeen koitin ajaa modulin t001:lle komennolla ``$ sudo salt 't001' state.apply sshd``. Ensimmäinen ajokerta asensi openssh-serverin ja muokkasi /etc/ssh/sshd_config-tiedoston onnistuneesti, mutta epäonnistui viimeisessä vaiheessa virheilmoituksella.
+
+````
+...
+Comment: The following requisites were not found:
+                                 watch:
+                                     id: file /etc/ssh/sshd_config
+...
+````
+
+Huomasin filen perästä puuttuvan kaksoispisteen, jonka lisäämisen jälkeen viimeinenkin vaihe onnistui. Tämän jälkeen testasin orjia pyörittävällä isäntäkoneella, toimiiko ssh-yhteys. Vakioportilla ssh kieltäytyi yhteyden muodostamisesta, mutta portilla 8888 kyseli salasanaa, eli käyttäjätunnusten ollessa tiedossa yhteys olisi todennäköisesti muodostunut.
+
+![Add file: ssh testi](/img/sshd_testi.png)
+> Vakioportti ei toimi, portti 8888 toimii
+
+[--- loppuosuus palautettu lisätty 14:20 ---]
