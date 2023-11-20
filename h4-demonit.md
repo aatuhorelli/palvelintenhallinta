@@ -188,3 +188,43 @@ SSH:n portin vaihtamisen vaiheet:
 - Testaa toiminta ``$ nc -vz tero.example.com 8888`` tai `` $ ssh -p 8888 tero@tero.example.com``
 
 Lähde: https://terokarvinen.com/2018/04/03/pkg-file-service-control-daemons-with-salt-change-ssh-server-port/?fromSearch=karvinen%20salt%20ssh
+
+## A) Hello SLS!
+
+Tehtävien orjat pyörivät paikallisella koneella Debian 12 -käyttöjärjestelmässä VirtualBoxilla. Herra on vuokratulla palvelimella (Linode Nanode).
+
+Aloitin potkaisemalla aiemmin [määrittelemäni](https://github.com/aatuhorelli/palvelintenhallinta/blob/main/h2-karjaa.md) Debian 11 -orjat ajamalla komennon ``$ vagrant up`` hakemistossa /home/aatu/Vagrant/nettiorja. Otin toisessa terminaalissa samalla ssh-yhteyden herraa pyörittävään palvelimeen komennolla ``$ ssh [ip-osoite]``. Päästyäni herrakoneelle loin hakemiston ``$ mkdir /srv/salt/hello``-komennolla hakemiston, johon tilan init.sls oli tarkoitus luoda.
+
+Siirryin luomaani hakemistoon ``$ cd /srv/salt/hello`` ja tarkistin orjien olevan linjoilla ``$ sudo salt '*' test.ping``. Molemmat orjat vastasivat True, eli tilan ajaminen pitäisi sen perusteella myöhemmin onnistua. Testasin toiselle orjista hello-tiedoston luomista state.singlen avulla.
+
+![Add file: t002 hello](/img/ping_t002_hello.png)
+> Ajettu komento: Orjalta t002 tulee löytyä tiedosto /tmp/hello, jonka sisältö on "Hello world!"  
+
+Tarkistin vielä tiedoston sisällön:
+    
+    aatu@localhost:/srv/salt/hello$ sudo salt 't002' state.single cmd.run "cat /tmp/hello"
+    t002:
+    ----------
+    ...
+        stdout:
+                  Hello world! # catilla luettu sisältö. Näyttäisi olevan oikein.
+    ...
+    
+
+Loin microlla tiedoston init.sls, johon käänsin aiemmin orjalle ajetun komennon YAML-muotoon. Tallensin(ctrl + s) tiedoston ja suljin sen(ctrl + q). 
+    
+    aatu@localhost:/srv/salt/hello$ micro init.sls 
+    aatu@localhost:/srv/salt/hello$ cat init.sls 
+    /tmp/hello: # Tiedoston polku ja nimi
+      file.managed: # tila, tiedoston tulee löytyä
+        - contents: Hello world! # tiedoston sisältö
+
+Seuraavaksi ajoin tilan orjille. Odotusarvo on, että molemmat onnistuvat, mutta t002:lta tiedosto jo löytyy oikealla sisällöllä, joten siihen ei tehdä muutoksia (Succeeded: 1). T001:llä yhteenvedossa tulisi lukea Succeeded: 1, (changed=1), sillä tiedostoa ei vielä ole olemassa.
+
+![Add file: state hello](/img/state_hello.png)
+> Ajettu komento ja orjien vastaukset
+
+Vastaukset vastasivat odotuksia.
+
+
+
