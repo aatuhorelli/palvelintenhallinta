@@ -428,4 +428,4 @@ Huomasin filen perästä puuttuvan kaksoispisteen, jonka lisäämisen jälkeen v
 ![Add file: ssh testi](/img/sshd_testi.png)
 > Vakioportti ei toimi, portti 8888 toimii
 
-[--- loppuosuus palautettu lisätty 14:20 ---]
+[--- loppuosuus palautettu 14:20 ---]
