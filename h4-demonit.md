@@ -224,7 +224,14 @@ Seuraavaksi ajoin tilan orjille. Odotusarvo on, että molemmat onnistuvat, mutta
 ![Add file: state hello](/img/state_hello.png)
 > Ajettu komento ja orjien vastaukset
 
-Vastaukset vastasivat odotuksia.
+Vastaukset vastasivat odotuksia. Varmistin vielä tiedoston sisällön suoraan virtuaalikoneelle ssh:lla kirjautumalla:
+
+````
+$ vagrant ssh t001
+...
+vagrant@t001:~$ cat /tmp/hello
+Hello world!
+````
 
 
 
