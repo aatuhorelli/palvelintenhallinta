@@ -384,3 +384,17 @@ Succeeded: 4 (changed=3) # Apache2 oli jo käynnissä, joten muutoksia ei tehty.
 
 ````
 
+d) SSHouto
+
+Seurasin tehtävässä [terokarvinen.com](https://terokarvinen.com/2018/04/03/pkg-file-service-control-daemons-with-salt-change-ssh-server-port/?fromSearch=karvinen%20salt%20ssh) ohjetta. 
+
+Aloitin kopioimalla /etc/ssh/sshd_config -tiedoston hakemistoon /srv/salt/ssh/ komennolla ``$ sudo cp /etc/ssh/sshd_config /srv/salt/``. Tämän jälkeen avasin kopioimani tiedoston sudoeditillä ``$ sudoedit /srv/salt/sshd_config`` ja muokkasin asetusta, jolla määritellään kuunneltava portti.
+
+
+    aatu@localhost:/srv/salt/$ cat sshd_config | grep 8888
+    Port 8888
+
+Ajanpuutteen vuoksi en ehtinyt viritellä uutta virtuaalikonetta, joten poistin toiselta orjalta ssh:n komennolla ``$ sudo salt 't001' state.single pkg.removed openssh-server``. Tämän jälkeen ajoin orjia pyörittävällä isäntäkoneella komennon ``$ ssh 192.168.56.2 # t001 ip-osoite``, joka vastasi "Connection refused", eli ssh ei vastaa.
+
+[---- palautus tässä välissä keskeneräisenä ----]
+
