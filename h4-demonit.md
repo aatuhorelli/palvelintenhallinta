@@ -233,5 +233,49 @@ vagrant@t001:~$ cat /tmp/hello
 Hello world!
 ````
 
+## B) Top
 
+Kirjoitin herran /srv/salt/top.sls-tiedostoon seuraavanlaisen sisällön:
 
+````
+base:
+  '*': # koskee kaikkia orjia
+     - hello # ajettavan tilan nimi
+````
+
+Poistin aiemman hello-tiedoston orjilta komennolla ``$ sudo salt '*' state.single file.absent /tmp/hello # Comment: File /tmp/hello is not present``. Olin käynnistänyt tietokoneeni välissä uudestaan, joten tmp-hakemisto oli tyhjennetty, mutta tulipa ainakin varmistettua. 
+
+Tämän jälkeen ajoin top.sls:n mukaiset tilat orjille komennolla ``$ sudo salt '*' state.apply``. Hello-modulia ei tässä yhteydessä tarvinnut mainita, koska top.sls-tiedostoon on määritelty mitä tiloja kullekin orjalle tulee ajaa. 
+
+````
+t002:
+----------
+          ID: /tmp/hello # tiedoston nimi
+    Function: file.managed # tilafunktio
+      Result: True 
+     Comment: File /tmp/hello updated # Tehty muutoksia -> tiedosto päivitetty
+     Started: 11:00:13.846069 
+    Duration: 13.236 ms
+     Changes:   
+              ----------
+              diff:
+                  New file # /tmp/hello -tietosto luotu
+
+Summary for t002
+------------
+Succeeded: 1 (changed=1) # Onnistunut suoritus. Tiedosto luotu.
+Failed:    0
+------------
+
+[...]
+
+Summary for t001
+------------
+Succeeded: 1 (changed=1)
+Failed:    0
+------------
+Total states run:     1
+````
+Molemmat orjat vastasivat onnistuneensa tehtävässä (Succeeded: 1) luomalla uuden tiedoston (changed=1). Ajamalla sama komento uudestaan, molempien orjien vastauksessa oli kommenttina rivi "File /tmp/hello is in the correct state", eli tiedosto löytyi ja sisältö oli oikea.
+
+## C) 
