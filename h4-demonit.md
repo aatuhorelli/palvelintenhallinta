@@ -278,4 +278,109 @@ Total states run:     1
 ````
 Molemmat orjat vastasivat onnistuneensa tehtävässä (Succeeded: 1) luomalla uuden tiedoston (changed=1). Ajamalla sama komento uudestaan, molempien orjien vastauksessa oli kommenttina rivi "File /tmp/hello is in the correct state", eli tiedosto löytyi ja sisältö oli oikea.
 
-## C) 
+## C) Apache
+
+Varmistin ensin, että orjilla ei ole apache2 asennettuna komennolla ``$ sudo '*' state.single pkg.removed apache2``. Molemmat orjat vastasivat "Comment: All targeted packages were removed", eli Apache2 oli valmiiksi asennettuna, mutta poistettiin komennon ajamisen yhteydessä. Varmistin myös, että curl on asennettu, sillä ajattelin testata index.html:n sisällön lopuksi sillä: ``$ sudo '*' state.single pkg.installed curl``. 
+
+Apachen asennuksessa ja testisivun korvaamisen vaiheet:
+ - Apachen asennus (pkg.installed apache2)
+ - Testisivun korvaus (file.managed /var/www/html/index.html contents="Testisivu")
+ - Tarkistetaan, että demoni on käynnissä (service.running apache2-service)
+ - Tarkistetaan index.html:n sisältö (cmd.run "curl localhost")
+
+Testasin näitä komentoja t001:lle. 
+
+    $ sudo salt 't001' state.single pkg.installed apache2 # Succeeded 1, changed 1. Paketti asennettu
+    $ sudo salt 't001' state.single file.managed /var/www/html/index.html contents="Testisivu" # tiedosto muokattu. Olin näemmä määritellyt jo aiemmin index.html:lle normaalista poikkeavan sisällön, joka nyt muutettiin.
+    $ sudo salt 't001' state.single service.running apache2 # Comment: The service apache2 is already running. Demoni käynnissä.
+    $ sudo salt 't001' state.single cmd.run "curl localhost" # stdout: Testisivu
+
+    # t002 testaus. Apache2 ei asennettu, joten curl localhost pitäisi palauttaa virheilmoitus
+    
+    $ sudo salt 't002' state.single cmd.run "curl localhost" # stderr: curl: (7) Failed to connect to localhost port 80: Connection refused
+
+Komentojen ajo onnistui ja curl localhost palautti oikeanlaisen sisällön, joten päättelin voivani kirjoitella näistä oman modulin /srv/salt/apache/init.sls. Tiedoston sisältö ja tilan ajaminen t001:lle.
+
+![Add file: feil](/img/apache2_fail.png)
+> /srv/salt/apache2/init.sls -tiedoston sisältö ja epäonnistunut ajo
+
+Tilan ajaminen epäonnistui, joten tarkistin vielä init.sls:n kirjoitusasun. Löysin ylimääräisen välilyönnin riviltä 4, jonka poistamisen jälkeen ``$ sudo salt 't001' state.apply apache2`` onnistui.
+
+````
+t001:
+----------
+          ID: apache2
+    Function: pkg.installed
+      Result: True
+     Comment: All specified packages are already installed # valmiiksi asennettu
+     Started: 11:29:00.050822
+    Duration: 64.463 ms
+     Changes:   
+----------
+          ID: /var/www/html/index.html
+    Function: file.managed
+      Result: True
+     Comment: File /var/www/html/index.html is in the correct state # tiedoston sisältö oikea
+     Started: 11:29:00.117498
+    Duration: 10.45 ms
+     Changes:   
+----------
+          ID: apache2-service
+    Function: service.running
+        Name: apache2
+      Result: True
+     Comment: The service apache2 is already running # palvelu käynnissä
+     Started: 11:29:00.128453
+    Duration: 25.976 ms
+     Changes:   
+----------
+          ID: curlaus
+    Function: cmd.run
+        Name: curl localhost
+      Result: True
+     Comment: Command "curl localhost" run
+     Started: 11:29:00.155917
+    Duration: 12.673 ms
+     Changes:   
+              ----------
+              pid:
+                  2163
+              retcode:
+                  0
+              stderr:
+                    % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                                   Dload  Upload   Total   Spent    Left  Speed
+                  
+                    0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+                  100    10  100    10    0     0   5000      0 --:--:-- --:--:-- --:--:--  5000
+              stdout:
+                  Testisivu # palvelin palauttaa curlilla oikeanlaisen sivun
+
+Summary for t001
+------------
+Succeeded: 4 (changed=1)
+Failed:    0
+------------
+Total states run:     4
+Total run time: 113.562 ms
+
+````
+
+Kaikki vaiheet onnistuivat, eikä muutoksia tehty, koska olin asentanut kaikki jo käsin t001:lle. Ajoin vielä saman komennon t002:lle, jolla Apachea ei vielä ollut.
+
+````
+t002:
+...
+     Comment: The following packages were installed/updated: apache2
+...
+     Comment: File /var/www/html/index.html updated
+...
+     Comment: The service apache2 is already running
+...
+              stdout:
+                  Testisivu
+...
+Succeeded: 4 (changed=3) # Apache2 oli jo käynnissä, joten muutoksia ei tehty. 3 muuta muutosta.
+
+````
+
