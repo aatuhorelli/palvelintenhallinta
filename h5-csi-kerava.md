@@ -141,6 +141,54 @@ Tarkistin vielä tiedoston sisällön varmistuakseni löytäneeni oikean tiedost
 
 ## c) Komennus
 
+Loin ensin uuden yksinkertaisen hello world -komennon omaan kotihakemistooni. Ensin paikallinen testaus, tämän jälkeen Saltin kimppuun. Päätin toteuttaa ohjelman bashilla, joten tarkistin myös bashin sijainnin ohjelman ensimmäistä riviä(shebang) varten. Shebangissa määritellään, millä ohjelmalla tiedosto tulee ajaa.
+
+Komennot:
+
+    $ cd /home/aatu
+    $ mkdir komennot
+    $ cd komennot
+    $ which bash
+    /usr/bin/bash
+    $ micro helloworld
+    $ cat helloworld
+    #!/usr/bin/bash 
+
+    echo Hello $USER
+
+Tämän jälkeen testasin ohjelman ajamista. ``$ bash helloworld`` toimi, mutta ``$ ./helloworld`` tulosti virheen "bash: ./helloworld: Permission denied". Olin unohtanut määritellä chmodilla tiedoston käyttöoikeudet kuntoon. 
+
+    $ ls -l helloworld  # tiedostojen listaus. -l näyttää oikeudet
+    -rw-r--r-- 1 aatu aatu 34 26.11. 21:50 helloworld
+    
+Tiedosto oli yhden käyttäjän ryhmän 'aatu' omistama, ja oikeudet olivat -rw-r--r--. Ensimmäinen viiva tarkoittaa, että kyseessä on tiedosto. Kolme ensimmäistä merkkiä ovat käyttäjän oikeudet (r = read, w= write, - = suoritusoikeutta x ei ole), seuraavat kolme (r--) vastaavasti ryhmän oikeudet (pelkkä luku) ja viimeiset kolme (r--) muiden kuin omistajakäyttäjän tai -ryhmän oikeudet. Koska halusin komennon olevan kaikkien käytössä, tuli ajo-oikeus x määrittää kaikille. Lisäsin sen komennolla ``$ chmod ugo+x helloworld``. Tämä lisää User, Group ja Other -käyttäjille oikeuden suorittaa tiedosto. Tämän jälkeen tiedoston ajaminen onnistui myös komennolla ``$ ./helloworld``. 
+
+![Add file: helloworld oikeudet](/img/helloworld_oikeudet.png)
+> Tiedoston oikeudet, niiden muokkaus ja testi
+
+Kopioin tiedoston hakemistoon /usr/bin/, jossa kaikkien käyttäjien yhteiset ohjelmat ovat. Kansio on rootin omistama, joten sinne kirjoittaminen vaatii sudon käyttöä. Käytetty komento: ``$ sudo cp helloworld /usr/bin/``. Tämän jälkeen testasin komennon toiminnan toisessa kansiossa.
+
+    $ cd ..
+    $ helloworld 
+    Hello aatu
+
+Ohjelma toimi, joten poistin sen /usr/bin-hakemistosta voidakseni varmistua siitä, että tiedosto on siirtynyt sinne myöhemmin saltin avulla. Tämän jälkeen helloworld-komento ei enää toiminut.
+
+    ~$ sudo rm /usr/bin/helloworld
+    ~$ helloworld
+    bash: /usr/bin/helloworld: No such file or directory
+
+Laitteella oli jo Salt minion ja master paikallisesti asennettuna, joten testasin niiden olevan toiminnassa. ``$ sudo salt '*' test.ping # kotiorja: True --> toiminnassa ja vastaa kutsuihin``. Loin asennettavaa ohjelmaa varten uuden kansion, johon kopioin tekemäni ohjelman ja loin init.sls-tiedoston.
+
+    $ sudo mkdir /srv/salt/hello
+    $ sudo cp /home/aatu/komennot/helloworld /srv/salt/hello
+    $ cd /srv/salt/hello
+    $ hello$ ./helloworld # ohjelman testaaminen
+    Hello aatu
+    $ sudoedit init.sls
+    $ cat init.sls
+    
+
 
 
 
