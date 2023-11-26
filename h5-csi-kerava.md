@@ -324,7 +324,7 @@ Sivu vastasi, eli Apachen demoni ja käyttäjien kotihakemistot olivat käytöss
 
 ## e) Ämpärillinen
 
-Loin ensin muutaman yksinkertaisen komennon kotihakemistoni komennot-kansioon. C-kohdassa kirjoiteltu helloworld löytyi jo, joten hyödynsin sitä osana tehtävää. Annoin kokeilun vuoksi myös ChatGPT:lle tehtäväksi luoda bash-pohjaisen simppelin arvauspelin, jossa koitetaan arvata satunnaisgeneroitua lukua yhden ja ohjelmaa käynnistäessä määritetyn maksimin väliltä. 
+Loin ensin muutaman yksinkertaisen komennon kotihakemistoni komennot-kansioon. C-kohdassa kirjoiteltu helloworld löytyi jo, joten hyödynsin sitä osana tehtävää. Annoin kokeilun vuoksi myös [ChatGPT](https://chat.openai.com/):lle tehtäväksi luoda bash-pohjaisen simppelin arvauspelin, jossa koitetaan arvata satunnaisgeneroitua lukua yhden ja ohjelmaa käynnistäessä määritetyn maksimin väliltä. 
 
 ![Add file: ohjelmat koodeineen](/img/ohjelmat.png)
 
@@ -367,6 +367,13 @@ Saman komennon ajaminen uudestaan palautti onnistuneen suorituksen ja kertoi kai
 
 ![Add file: testailua](/img/komennot_toimii.png)
 > Komentojen testaus. Hyvä peli on.
+
+
+# Lähteet
+
+ - Karvinen, 2023. Infra as Code 2023. Luettavissa: https://terokarvinen.com/2023/configuration-management-2023-autumn/. Luettu 26.11.2023.
+ - Karvinen, 2018. Apache User Homepages Automatically - Salt Package-File-Service Example. Luettavissa https://terokarvinen.com/2018/04/03/apache-user-homepages-automatically-salt-package-file-service-example/. Luettu 26.11.2023.
+
 
 
 
