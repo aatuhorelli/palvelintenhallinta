@@ -254,28 +254,74 @@ Tämän jälkeen laitoin käyttäjien kotisivut käyttöön, käynnistin Apachen
     2023-11-26+22:51:47.6679977870 /etc/apache2/mods-enabled/userdir.conf
     2023-11-26+22:51:47.6679977870 /etc/apache2/mods-enabled/userdir.load
 
-Tein vielä omalle käyttäjälleni testisivun ja testasin sitä curlilla.
+Tarkastin vielä mitä userdir pois päältä kytkeminen tekee komennolla ``$ sudo a2dismod userdir``. Tämä poisti mods-enabled kansiosta userdir-tiedostot, jotka olivat ``$ stat``-komennon mukaan symbolisia linkkejä vastaaviin tiedostoihin /etc/apache/mods-available/-hakemistossa. Kytkin userdirin takaisin käyttöön a2enmodilla. Tämän jälkeen tein vielä omalle käyttäjälleni testisivun ja testasin sitä curlilla.
 
     $ mkdir /home/aatu/public_html/
     $ echo TEST > /home/aatu/public_html/index.html
     $ curl localhost/~aatu/
     TEST # toimii!
 
-Tarvittava manuaalityö oli nyt tehty. Seuraavaksi sama pitäisi toistaa saltilla. Kopioin luomani index.html-tiedoston sekä userdiriin liittyvät tiedostot userdir.conf ja userdir.loadin /srv/salt/apache/-hakemistoon, josta tila myöhemmin ajettaisiin orjille:
+Tarvittava manuaalityö oli nyt tehty. Seuraavaksi sama pitäisi toistaa saltilla. 
 
     $ sudo mkdir /srv/salt/apache
     $ sudo cp /home/aatu/public_html/index.html /srv/salt/apache/default-index.html
-    $ sudo cp /etc/apache2/mods-enabled/userdir.conf /srv/salt/apache/
-    $ sudo cp /etc/apache2/mods-enabled/userdir.load /srv/salt/apache/
     $ ls /srv/salt/apache/
     default-index.html  userdir.conf  userdir.load # tiedostot paikallaan
 
 Init.sls-tiedostoon olisi määritettävä seuraavat asiat:
- - Apache2 on oltava asennettu ja päällä
- - Userdiriin liittyvät asetukset kopioidaan herralta ja niiden muuttuessa Apache2 käynnistetään uudelleen
+ - Apache on oltava asennettu ja päällä
+ - Apachen oletusetusivu korvattu  
+ - Userdir.conf ja userdir.load tiedostoille luodaan symbolinen linkki /etc/apache2/mods-enabled/-kansioon
+ - Apache2 on päällä, ja uudelleenkäynnistetään tehtäessä userdir-tiedostoihin muutoksia.
+   
 
-Käytin apuna aihetta käsittelevää [terokarvinen.com](https://terokarvinen.com/2018/04/03/apache-user-homepages-automatically-salt-package-file-service-example/) artikkelia.
+Käytin apuna aihetta käsittelevää [terokarvinen.com](https://terokarvinen.com/2018/04/03/apache-user-homepages-automatically-salt-package-file-service-example/) artikkelia. Kopioin init.sls:n sisällön kokonaisuudessaan.
+
+    $ cat /srv/salt/apache/init.sls
     
+    apache2:
+     pkg.installed
+    /var/www/html/index.html:
+     file.managed:
+       - source: salt://apache/default-index.html
+    /etc/apache2/mods-enabled/userdir.conf:
+     file.symlink:
+       - target: ../mods-available/userdir.conf
+    /etc/apache2/mods-enabled/userdir.load:
+     file.symlink:
+       - target: ../mods-available/userdir.load
+    apache2service:
+     service.running:
+       - name: apache2
+       - watch:
+         - file: /etc/apache2/mods-enabled/userdir.conf
+         - file: /etc/apache2/mods-enabled/userdir.load
+
+Seuraavaksi poistin Apachen ja siihen liittyvät tiedostot kotihakemiston /public_html/-kansiota lukuunottamatta. Tuon kansion säilytin siksi, että voisin testata käyttäjien userdirin menneen onnistuneesti päälle. Tarkistin vielä, ettei localhost vastaa curliin ja että /etc/apache2/-hakemistossa ei ole tiedostoja, joita saltin muokkausten tulisi käsitellä.
+
+    $ sudo apt-get purge apache2 # apachen ja siihen liittyvien tiedostojen poisto
+    apache$ curl localhost
+    curl: (7) Failed to connect to localhost port 80 after 0 ms: Couldn't connect to server # ei käytössä
+    apache$ ls /etc/apache2/
+    conf-available # Apachen kansiossa ei mods-enabled tai mods-available kansioita
+
+
+Hyvältä näytti. Sitten testaamaan!
+
+    $ sudo salt '*' state.apply apache
+    ...
+    Summary for kotiorja
+    ------------
+    Succeeded: 5 (changed=5) # kaikki vaiheet onnistuneet
+    Failed:    0
+
+Koska yhteenveto väitti kaikkien vaiheiden onnistuneen, testasin oman käyttäjäni kotihakemiston toimintoa curlilla.
+
+    apache$ curl localhost/~aatu/
+    TEST
+
+Toimi!
+
 
 
 
