@@ -130,7 +130,7 @@ Ajattelin muokata jonkin sellaisen ohjelman asetuksia, joka ei raporttia kirjoit
 
 Seuraavaksi piti löytää tiedosto, johon muutos kirjoitettiin. Heti asetuksen muokkauksen jälkeen siirryin juurihakemistoon ``$ cd /``ja ajoin siellä komennon ``$ sudo find -printf '%T+ %p\n' | grep gimp | sort``, joka etsii pääkäyttäjäoikeuksilla tiedostojärjestelmän kaikkien tiedostojen muokkausajat ja sijainnit, listaa vain sanan 'gimp' sisältävät osumat ja järjestää listan. Tuorein muokattu tiedosto oli ``/home/aatu/.config/GIMP/2.10/gimprc``. Muutos oli ilmeisesti  vain käyttäjäkohtainen, koska asetus tallennettiin käyttäjän kotihakemistoon, eikä /etc/:n alle. 
 
-Tarkistin vielä tiedoston sisällön varmistuakseni oikean tiedoston löytymisen:
+Tarkistin vielä tiedoston sisällön varmistuakseni löytäneeni oikean tiedoston:
 
     /$ cat /home/aatu/.config/GIMP/2.10/gimprc
     # GIMP gimprc
@@ -139,7 +139,8 @@ Tarkistin vielä tiedoston sisällön varmistuakseni oikean tiedoston löytymise
     ...
     # end of gimprc
 
-## c) 
+## c) Komennus
+
 
 
 
