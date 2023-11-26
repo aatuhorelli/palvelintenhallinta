@@ -317,10 +317,10 @@ Hyvältä näytti. Sitten testaamaan!
 
 Koska yhteenveto väitti kaikkien vaiheiden onnistuneen, testasin oman käyttäjäni kotihakemiston toimintoa curlilla.
 
-    apache$ curl localhost/~aatu/
+    $ curl localhost/~aatu/
     TEST
 
-Toimi!
+Sivu vastasi, eli Apachen demoni ja käyttäjien kotihakemistot olivat käytössä. Toimii!
 
 
 
