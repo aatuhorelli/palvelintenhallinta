@@ -322,6 +322,51 @@ Koska yhteenveto väitti kaikkien vaiheiden onnistuneen, testasin oman käyttäj
 
 Sivu vastasi, eli Apachen demoni ja käyttäjien kotihakemistot olivat käytössä. Toimii!
 
+## e) Ämpärillinen
+
+Loin ensin muutaman yksinkertaisen komennon kotihakemistoni komennot-kansioon. C-kohdassa kirjoiteltu helloworld löytyi jo, joten hyödynsin sitä osana tehtävää. Annoin kokeilun vuoksi myös ChatGPT:lle tehtäväksi luoda bash-pohjaisen simppelin arvauspelin, jossa koitetaan arvata satunnaisgeneroitua lukua yhden ja ohjelmaa käynnistäessä määritetyn maksimin väliltä. 
+
+![Add file: ohjelmat koodeineen](/img/ohjelmat.png)
+
+Tehtävä ei juurikaan poikkea c-kohdasta, määriteltyäni kaikille suoritusoikeudet ``$ chmod ugo+x *`` ja testattuani kutakin komentoa, kopioin ne kansioon /srv/salt/ampari/ komennoilla ``$ sudo mkdir /srv/salt/ampari/`` ja ``$ sudo cp * /srv/salt/ampari/``. Poistelin vielä c-kohdassa asentamani helloworld-komennon ``$ sudo rm /usr/bin/helloworld``, minkä jälkeen ``$ helloworld`` ei enää toiminut. 
+
+C-kohdan init-sls oli myös käyttökelpoinen tähän tehtävään, joten siirryin hakemistoon /srv/salt/ampari/ ja kopioin hello-hakemistosta init.sls:n pohjaksi ``$ sudo cp /srv/salt/hello/init.sls .``. Muokkasin sudoeditillä lähdetiedostojen polut oikein ja lisäsin arvaa ja huomenta -ohjelmien määrittelyt. 
+
+    $ cat init.sls 
+    /usr/bin/helloworld:
+      file.managed:
+        - source: salt://ampari/helloworld
+        - user: root
+        - group: root
+        - mode: "0755"
+    /usr/bin/arvaa:
+      file.managed:
+        - source: salt://ampari/arvaa
+        - user: root
+        - group: root
+        - mode: "0755"
+    /usr/bin/huomenta:
+      file.managed:
+        - source: salt://ampari/huomenta
+        - user: root
+        - group: root
+        - mode: "0755"
+
+Tilan ajo orjalle:
+
+    $ sudo salt '*' state.apply ampari
+    ...
+    Summary for kotiorja
+    ------------
+    Succeeded: 3 (changed=3) # Tiedostot luotu onnistuneesti
+    Failed:    0
+    ------------
+    Total states run:     3
+
+Saman komennon ajaminen uudestaan palautti onnistuneen suorituksen ja kertoi kaikkien tiedostojen olevan jo paikallaan ja oikeassa muodossa. Idempotenssi siis toteutui. Lopuksi luotujen komentojen testailua:
+
+![Add file: testailua](/img/komennot_toimii.png)
+> Komentojen testaus. Hyvä peli on.
 
 
 
