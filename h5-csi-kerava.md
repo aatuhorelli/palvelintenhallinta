@@ -187,7 +187,58 @@ Laitteella oli jo Salt minion ja master paikallisesti asennettuna, joten testasi
     Hello aatu
     $ sudoedit init.sls
     $ cat init.sls
-    
+    /usr/bin/helloworld:
+      file.managed:
+        - source: salt://hello/helloworld
+
+Tila hello oli nyt luotu, joten testasin sen ajamista orjalle.
+
+    $ sudo salt '*' state.apply hello # ajaa kaikille orjille tilan 'hello'
+    kotiorja:
+    ----------
+          ID: /usr/bin/helloworld
+    Function: file.managed
+      Result: True # onnistunut suoritus
+     Comment: File /usr/bin/helloworld updated # tiedosto päivitetty
+     Started: 22:25:06.209155
+    Duration: 50.259 ms
+     Changes:   
+              ----------
+              diff:
+                  New file # uusi tiedosto /usr/bin/helloworld luotu
+              mode:
+                  0644
+
+    Summary for kotiorja
+    ------------
+    Succeeded: 1 (changed=1)
+    Failed:    0
+    ------------
+    Total states run:     1
+    Total run time:  50.259 ms
+    $ helloworld # testisuoritus
+    bash: /usr/bin/helloworld: Permission denied
+
+Testisuorituksessa vastanotin valituksen käyttöoikeuksista, joten etsin salt-callin ohjeista niiden määrittämiseen liittyviä asetuksia. Käytin kotihakemistossani tehtävänannon vinkkiosion komentoa ``$ sudo salt-call --local sys.state_doc > statedoc``, jolla salt-callin ohjeet viedään omaan tiedostoonsa helpommin luettavaan muotoon. Tämän jälkeen avasin sen komennolla ``$ less statedoc`` ja etsin file.managediin liittyviä määrityksiä lessin hakutoiminnolla: ``/file.managed``.
+
+![Add file: statedoc file.managed](/img/statedoc_file.managed.png)
+> Oletettavasti oikeita asetuksia statedocista
+
+Koska oikeudet tuli määrittää ilmeisesti numeerisesti, tarkistin vielä alkuperäisestä helloworld-tiedostosta oikeudet komennolla ``$ stat /home/aatu/komennot/helloworld # Access: (0755/-rwxr-xr-x)``. Muistelin edelliseltä luennolta, että vaikka statedocissa oikeudet eivät ole lainausmerkeissä, on niiden lisääminen toiminnan kannalta järkevää. Muokkasin aiemmin luomaani init.sls-tiedostoa oikeudet sinne lisäten:
+
+    $ sudoedit /srv/salt/hello/init.sls
+    $ cat /srv/salt/hello/init.sls
+    /usr/bin/helloworld:
+      file.managed:
+        - source: salt://hello/helloworld
+        - user: root
+        - group: root
+        - mode: "0755"
+
+Ajoin tilan uudestaan saltilla ja testasin toiminnan: ``$ sudo salt '*' state.apply hello``, ``$ helloworld``. Tiedosto päivitettiin ja komento oli ajettavissa.
+
+
+
 
 
 
