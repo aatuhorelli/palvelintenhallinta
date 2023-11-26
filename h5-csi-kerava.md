@@ -70,7 +70,7 @@ Artikkeli sisältää esimerkkejä demonien konfiguraatiotiedostoista Saltille. 
 
 Lähde: https://terokarvinen.com/2018/04/03/apache-user-homepages-automatically-salt-package-file-service-example/
 
-## A) CSI Kerava
+## a) CSI Kerava
 
     Laitteen tiedot:
     OS: Debian 12
@@ -121,9 +121,25 @@ Ajoin vielä kotihakemistossa vastaavan komennon ilman sudoa, koska oletin käyt
 Kotihakemiston tuoreimmat muokatut tiedostot liittyivät kaikki Firefoxiin, jolla selasin tehtävänantoa ja Githubia.
 
 
-## Gui2fs
+## b) Gui2fs
 
-Ajattelin muokata jonkin sellaisen ohjelman asetuksia, joka ei raporttia kirjoitellessa ollut jo valmiiksi käytössä. Hetken Applications-listaa selattuani valitsin uhriksi GIMPin. (Applications -> Graphics -> Gnu Image Manipulation Program). GIMPin navigointipalkista valitsin Edit -> Preferences päästäkseni asetuksiin, josta kävin poistamassa Exif metadatan lisäämisen kuviin (Image import & Export -> [ ] Export Exif metadata by default when available). 
+Ajattelin muokata jonkin sellaisen ohjelman asetuksia, joka ei raporttia kirjoitellessa ollut jo valmiiksi käytössä. Hetken Applications-listaa selattuani valitsin uhriksi GIMPin. (Applications -> Graphics -> Gnu Image Manipulation Program). GIMPin navigointipalkista valitsin Edit -> Preferences päästäkseni asetuksiin, josta kävin poistamassa Exif metadatan lisäämisen kuviin (Image import & Export -> [ ] Export Exif metadata by default when available).
+
+![Add file: gimpin asetukset](img/GIMP.png)
+> GIMPin asetukset ja tehty muutos
+
+Seuraavaksi piti löytää tiedosto, johon muutos kirjoitettiin. Heti asetuksen muokkauksen jälkeen siirryin juurihakemistoon ``$ cd /``ja ajoin siellä komennon ``$ sudo find -printf '%T+ %p\n' | grep gimp | sort``, joka etsii pääkäyttäjäoikeuksilla tiedostojärjestelmän kaikkien tiedostojen muokkausajat ja sijainnit, listaa vain sanan 'gimp' sisältävät osumat ja järjestää listan. Tuorein muokattu tiedosto oli ``/home/aatu/.config/GIMP/2.10/gimprc``. Muutos oli ilmeisesti  vain käyttäjäkohtainen, koska asetus tallennettiin käyttäjän kotihakemistoon, eikä /etc/:n alle. 
+
+Tarkistin vielä tiedoston sisällön varmistuakseni oikean tiedoston löytymisen:
+
+    /$ cat /home/aatu/.config/GIMP/2.10/gimprc
+    # GIMP gimprc
+    ...
+    (export-metadata-exif no) # muokattu asetus
+    ...
+    # end of gimprc
+
+## c) 
 
 
 
