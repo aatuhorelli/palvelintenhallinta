@@ -121,6 +121,11 @@ Ajoin vielä kotihakemistossa vastaavan komennon ilman sudoa, koska oletin käyt
 Kotihakemiston tuoreimmat muokatut tiedostot liittyivät kaikki Firefoxiin, jolla selasin tehtävänantoa ja Githubia.
 
 
+## Gui2fs
+
+Ajattelin muokata jonkin sellaisen ohjelman asetuksia, joka ei raporttia kirjoitellessa ollut jo valmiiksi käytössä. Hetken Applications-listaa selattuani valitsin uhriksi GIMPin. (Applications -> Graphics -> Gnu Image Manipulation Program). GIMPin navigointipalkista valitsin Edit -> Preferences päästäkseni asetuksiin, josta kävin poistamassa Exif metadatan lisäämisen kuviin (Image import & Export -> [ ] Export Exif metadata by default when available). 
+
+
 
 
 
