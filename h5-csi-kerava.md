@@ -14,6 +14,7 @@ Artikkeli sisältää esimerkkejä demonien konfiguraatiotiedostoista Saltille. 
    - %T+ tulostaa muokkausajan
    - %p tiedostonimi ja polku
    - \n rivinvaihto
+   - sort järjestää tulosteen
      
 ### Komentojen käyttö Saltin tilan määrittelyssä
  - cmd määriteltävä idempotentiksi konfiguraatiotiedostoissa käytettäessä
@@ -68,4 +69,59 @@ Artikkeli sisältää esimerkkejä demonien konfiguraatiotiedostoista Saltille. 
    - Hakemiston käyttöoikeudet kuntoon: ``$ chmod ugo+x $HOME/public_html/; chmod ug+r $HOME/public_html/index.html``
 
 Lähde: https://terokarvinen.com/2018/04/03/apache-user-homepages-automatically-salt-package-file-service-example/
+
+## A) CSI Kerava
+
+    Laitteen tiedot:
+    OS: Debian 12
+    CPU: Intel i7-6700k
+    RAM: 32GB
+    SSD: 100GB
+
+Aloitin päivittämällä paketinhallinnan listat ja asennetut paketit komennoilla ``$ sudo apt-get update`` & ``$ sudo apt-get upgrade``. Tehtävänannon vinkkiosiota mukaillen ajoin /etc/-hakemiston tiedostojen etsimiseksi komennon ``$ sudo find /etc/ -printf '%T+ %p\n' | sort``.
+
+Komennon tulkinta manpagesia (``$ man find``) hyödyntäen:
+ - sudo: seuraavan komennon ajo pääkäyttäjäoikeuksilla. Olen aiemmin findiä käyttäessä huomannut, että kaikkia tiedostoja ei listata käytettäessä ilman sudoa.
+ - find: ajettava komento. Find etsii tiedostoja hakemistohierarkiasta.
+ - /etc/: hakemisto, josta haetaan
+ - printf: findin tulosteen muotoilu
+   - %T+: tulostaa tiedoston viimeisen muutoksen aikaleiman (T = aika, + = pvm+aika). Päivämäärä ja aika määräytyvät laitteen aikavyöhykkeen mukaan.
+   - %p: tiedoston nimi
+   - \n: rivinvaihto. printf ei tulosta rivinvaihtoja automaattisesti, vaan ne tulee lisätä itse.
+
+
+/etc/-kansion viimeisimmät muokatut tiedostot:
+
+    $ sudo find /etc/ -printf '%T+ %p\n' | sort
+    ...
+    2023-11-26+20:19:00.8039408450 /etc/default # Tiedostoa /etc/default muokattu 26.11.2023 kello 20:19:00. 
+    2023-11-26+20:19:00.8679408450 /etc/kernel/preinst.d
+    2023-11-26+20:19:00.9159408460 /etc/modprobe.d
+    2023-11-26+20:19:02.1559408530 /etc/gimp/2.0
+    2023-11-26+20:19:02.2159408540 /etc/firefox-esr
+    2023-11-26+20:19:03.1279408590 /etc/ld.so.cache
+    2023-11-26+20:19:04.3919408670 /etc/
+    2023-11-26+20:19:04.3919408670 /etc/mailcap
+
+
+Viimeisimmät muutokset näyttivät olevan hieman aiemmin suoritetun ``$ sudo apt-get upgrade``:n yhteydessä päivitettyjen ohjelmien tiedostoissa. 
+
+Ajoin vielä kotihakemistossa vastaavan komennon ilman sudoa, koska oletin käyttäjän näkevän koko kotihakemistonsa sisällön ilman sudoa. Muistin myös kuulleeni, että sudon käyttö kotihakemistossa ei ole suotavaa. 
+
+    $ pwd
+    /home/aatu
+    $ find -printf '%T+ %p\n' | sort
+    ...
+    2023-11-26+20:49:24.1279521710 ./.mozilla/firefox/kkkpuhhe.default-esr
+    2023-11-26+20:49:24.1279521710 ./.mozilla/firefox/kkkpuhhe.default-esr/permissions.sqlite
+    2023-11-26+20:50:36.6479526210 ./.mozilla/firefox/kkkpuhhe.default-esr/sessionstore-backups/recovery.baklz4
+    2023-11-26+20:51:05.3879528000 ./.mozilla/firefox/kkkpuhhe.default-esr/sessionstore-backups
+    2023-11-26+20:51:05.3879528000 ./.mozilla/firefox/kkkpuhhe.default-esr/sessionstore-backups/recovery.jsonlz4
+
+Kotihakemiston tuoreimmat muokatut tiedostot liittyivät kaikki Firefoxiin, jolla selasin tehtävänantoa ja Githubia.
+
+
+
+
+
 
