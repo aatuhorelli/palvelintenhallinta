@@ -237,8 +237,45 @@ Koska oikeudet tuli määrittää ilmeisesti numeerisesti, tarkistin vielä alku
 
 Ajoin tilan uudestaan saltilla ja testasin toiminnan: ``$ sudo salt '*' state.apply hello``, ``$ helloworld``. Tiedosto päivitettiin ja komento oli ajettavissa.
 
+## d) Apassi
 
+Testasin, onko Apache2 asennettu ``$ systemctl status apache2 # Unit apache2.service could not be found.``. Palvelua ei löytynyt, eli se olisi ensin asennettava. Olin jo aiemmin päivittänyt paketinhallinnan listat, joten ``$ sudo apt-get install apache2 -y`` riitti paketin asentamiseen. Tämän jälkeen käynnistin Apachen komennolla ``$ sudo systemctl start apache2`` ja testasin sen olevan päällä siirtymällä selaimella osoitteeseen localhost. 
 
+![Add file: apassi päällä](/img/apassi.png)
+> Apache testisivu päällä
+
+Tämän jälkeen laitoin käyttäjien kotisivut käyttöön, käynnistin Apachen uudelleen ja tarkistin, mitä tiedostoa asetus muokkasi. 
+
+    $ sudo a2enmod userdir
+    $ sudo systemctl restart apache2
+    $ sudo find /etc/ -printf '%T+ %p\n' | sort
+    ...
+    2023-11-26+22:51:47.6679977870 /etc/apache2/mods-enabled
+    2023-11-26+22:51:47.6679977870 /etc/apache2/mods-enabled/userdir.conf
+    2023-11-26+22:51:47.6679977870 /etc/apache2/mods-enabled/userdir.load
+
+Tein vielä omalle käyttäjälleni testisivun ja testasin sitä curlilla.
+
+    $ mkdir /home/aatu/public_html/
+    $ echo TEST > /home/aatu/public_html/index.html
+    $ curl localhost/~aatu/
+    TEST # toimii!
+
+Tarvittava manuaalityö oli nyt tehty. Seuraavaksi sama pitäisi toistaa saltilla. Kopioin luomani index.html-tiedoston sekä userdiriin liittyvät tiedostot userdir.conf ja userdir.loadin /srv/salt/apache/-hakemistoon, josta tila myöhemmin ajettaisiin orjille:
+
+    $ sudo mkdir /srv/salt/apache
+    $ sudo cp /home/aatu/public_html/index.html /srv/salt/apache/default-index.html
+    $ sudo cp /etc/apache2/mods-enabled/userdir.conf /srv/salt/apache/
+    $ sudo cp /etc/apache2/mods-enabled/userdir.load /srv/salt/apache/
+    $ ls /srv/salt/apache/
+    default-index.html  userdir.conf  userdir.load # tiedostot paikallaan
+
+Init.sls-tiedostoon olisi määritettävä seuraavat asiat:
+ - Apache2 on oltava asennettu ja päällä
+ - Userdiriin liittyvät asetukset kopioidaan herralta ja niiden muuttuessa Apache2 käynnistetään uudelleen
+
+Käytin apuna aihetta käsittelevää [terokarvinen.com](https://terokarvinen.com/2018/04/03/apache-user-homepages-automatically-salt-package-file-service-example/) artikkelia.
+    
 
 
 
