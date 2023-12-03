@@ -172,7 +172,7 @@ Orja oli linjoilla, joten grains.items voitiin kätevästi käskyttää herran k
     saltpath:
         C:\Program Files\Salt Project\Salt\Lib\site-packages\salt # Saltin sijainti orjalla
     saltversion:
-        3006.4               # Saltin versio orjalla. Oltava sama, kuin herralla. 
+        3006.4               # Saltin versio orjalla. OHerran version oltava sama tai uudempi. 
     shell:
         C:\Windows\system32\cmd.exe    # Orjan käyttämä komentorivi
 
