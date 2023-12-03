@@ -174,5 +174,33 @@ Orja oli linjoilla, joten grains.items voitiin kätevästi käskyttää herran k
     saltversion:
         3006.4               # Saltin versio orjalla. Oltava sama, kuin herralla. 
     shell:
-        C:\Windows\system32\cmd.exe    # Käytettävä komentorivi. Ilmeisesti ajaa komennot tällä. 
-                                       # Pitänee vaihtaa powershelliin, jos haluaa käyttää Linuxin komentorivin komentoja.
+        C:\Windows\system32\cmd.exe    # Orjan käyttämä komentorivi
+
+## D) Saltin file -toiminto Windowsilla
+
+Testasin file.managed-toimintoa herran kautta samaan tyyliin kuin Linux-orjia komentaessa, ja ajattelin antaa mahdollisten virheilmoitusten johdattaa minut oikeille raiteille. Suoritin komennon ``$ sudo salt 'win10-orja' state.single file.managed c:\testi\nakki.txt contents="Olen tekstitiedosto moi"``. Suoritus epäonnistui virheilmoituksella "Specified file c:testinakki.txt is not an absolute path". Tulosteen poluista puuttuivat \-merkit, joten epäilin niiden toimivan "escapeina", ja käänsin ne toisin päin. Samalla virheilmoitus muuttui: 
+
+    aatu@localhost:~$ sudo salt 'win10-orja' state.single file.managed c:/testi/nakki.txt contents="Olen tekstitiedosto moi"
+    win10-orja:
+    ----------
+              ID: c:/testi/nakki.txt
+        Function: file.managed
+          Result: False
+         Comment: Parent directory not present # kansiota ei löydy
+         Started: 00:21:53.482553
+        Duration: 15.002 ms
+         Changes:   
+
+    Summary for win10-orja
+    ------------
+    Succeeded: 0
+    Failed:    1
+    ------------
+    Total states run:     1
+    Total run time:  15.002 ms
+    ERROR: Minions returned with non-zero exit code
+
+File.managed ei ilmeisesti suostu luomaan kansiota. Kävin luomassa sen virtuaalikoneella edelleen auki olevasta powershellistä: ``cd c:\`` & ``mkdir testi``. Siirryin kansioon komennolla ``cd testi`` ja tarkistin sen olevan tyhjä komennolla ``ls``.
+
+![Add file: orjan testikansio](/img/win10-testikansio.png)
+> Testikansion luominen powershellin kautta
