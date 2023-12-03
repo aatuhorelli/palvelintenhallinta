@@ -116,7 +116,7 @@ Seuraavaksi salasanoja, salaisia kysymyksiä ja Microsoftin mainosahdistelua, mi
 
 Lopuksi poistin Windowsin kaikissa asennuksissa ärsyttävästi silmille hyppivät hyväksymisikkunat (Vasemman alakulman hakupalkki -> User account control settings -> Never notify -> OK). 
 
-## B) Salt Windowsille
+## B & I) Salt Windowsille & cmd.run
 
 Latasin Saltin 3006.4 -version asennustiedoston ([linkki](https://repo.saltproject.io/salt/py3/windows/latest/Salt-Minion-3006.4-Py3-AMD64-Setup.exe)). Koska tarjolla oli vain .exe-tiedosto, päätin asentaa ohjelman perinteiseen tapaan avaamalla ohjelman graafisen käyttöliittymän kautta. Asennuksen kysellessä herran IP-osoitetta annoin aiempia orjianikin komennelleen palvelimen ip-osoitteen. Tälle orjalle valitsin nimeksi win10-orja ja painoin Install. Asennuksen alkuvaiheissa Salt kyseli, että asennellaanko puuttuva vcredist samassa yhteydessä, minkä hyväksyin. Asennus rullasi muutamassa sekunissa loppuun onnistuneesti.
 
@@ -240,12 +240,12 @@ Koska F-kohdan tehtävänannossa mainittiin ohjelmien asennuksen vaativan alkuas
 
 Ohjeet pitäisivät olla sinänsä simppelit. Uusien komentojen tehtävä piti tehdä Windowsilla, joten en käskyttänyt tällä kertaa orjaa herran kautta, vaan ajoin ensimmäiset komennot paikallisesti powershellistä. Ymmärsin ohjeista, että ohjelmat ladattaisiin GitHubista, joten [latasin](https://github.com/git-for-windows/git/releases/download/v2.43.0.windows.1/Git-2.43.0-64-bit.exe) ja asensin Gitin Windows-orjalle. Asennusprosessissa ainoa muutos jonka tein vakiovalintoihin oli tekstieditorin valinta, jossa vaihdoin Vimin Nanoon. Toivottavasti tämä riitti tässä vaiheessa.
 
-Käynnistin Powerhsellin admin-oikeuksilla edellisissä kohdissa mainitulla tavalla ja ajoin ohjeiden komennon ``salt-call --local winrepo.update_git_repos``. Sain versiointiin liittyviä varoituksia, mutta ehkä komennon suoritus onnistui siitä huolimatta. Ajoin ohjeiden seuraavan komennon, jonka ymmärsin päivittävän "paketinhallinnan" listat: ``salt-call --local pkg.refresh_db``. 
+Käynnistin Powershellin admin-oikeuksilla edellisissä kohdissa mainitulla tavalla ja kloonasin GitHubin winrepon komennolla ``salt-call --local winrepo.update_git_repos``. Sain versiointiin liittyviä varoituksia, mutta ehkä komennon suoritus onnistui siitä huolimatta. Ajoin ohjeiden seuraavan komennon, jonka ymmärsin päivittävän "paketinhallinnan" listat: ``salt-call --local pkg.refresh_db``. 
 
 ![Add file: winrepo asennus](/img/win10-winrepo.png)
 > Varoituksia tuli, mutta refresh_db onnistui
 
-Etsin Googlesta [Saltstackin winrepon GitHub-repositorion](https://github.com/saltstack/salt-winrepo-ng) silmäilläkseni, mitä asennettavaa sieltä löytyisi. Katselisin varmasti paljon videoita Windows-orjallani, joten testasin vlc:n asennusta komentelemalla orjaa herran kautta: ``$ sudo 'win10-orja' pkg.installed vlc``. Sain virheilmoituksen "'pkg.installed' is not available". Tarkastin vielä uudemman kerran ohjeen ja huomasin käytettävän komennon olevan pkg.install. Kokeilin sitä.
+Siirryin ohjeessa mainitusta linkistä [Saltstackin winrepon GitHub-repositorioon](https://github.com/saltstack/salt-winrepo-ng) silmäilläkseni, mitä asennettavaa sieltä löytyisi. Katselisin varmasti paljon videoita Windows-orjallani, joten testasin vlc:n asennusta komentelemalla orjaa herran kautta: ``$ sudo 'win10-orja' pkg.installed vlc``. Sain virheilmoituksen "'pkg.installed' is not available". Tarkastin vielä uudemman kerran ohjeen ja huomasin käytettävän komennon olevan pkg.install. Kokeilin sitä, vaikka idempotenssia tuolla lienee turha tavoitella. 
 
     $ sudo salt 'win10-orja' pkg.installed vlc # ensimmäinen epäonnistunut suoritus
     win10-orja:
