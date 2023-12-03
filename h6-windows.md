@@ -122,7 +122,7 @@ Latasin Saltin 3006.4 -version asennustiedoston ([linkki](https://repo.saltproje
 ![Add file: Onnistunut asennus](/img/win10-salt.png)
 > Start salt-minion -> Finish
 
-Testasin vielä paikallisesti Salt minionin asentuneen avaamalla Powershellin admin-oikeuksin (tehtäväpalkin haku -> Powershell -> Run as Administrator). Testit suoritin kokeilemalla Linuxista tuttuja komentoja ``salt-call --version`` sekä ``salt-call --local -l info state.single cmd.run "echo toimiiko tää tälleen?". Ensimmäinen komento tulosti version 3006.4 (Sulfur) ja jälkimmäinen väitti ainakin tehneensä työtä käskettyä (Succeeded: 1 (changed=1)). 
+Testasin vielä paikallisesti Salt minionin asentuneen avaamalla Powershellin admin-oikeuksin (tehtäväpalkin haku -> Powershell -> Run as Administrator). Testit suoritin kokeilemalla Linuxista tuttuja komentoja ``salt-call --version`` sekä ``salt-call --local -l info state.single cmd.run "echo toimiiko tää tälleen?"``. Ensimmäinen komento tulosti version 3006.4 (Sulfur) ja jälkimmäinen väitti ainakin tehneensä työtä käskettyä (Succeeded: 1 (changed=1)). 
 
 ![Add file: salt-call testit](/img/win10-saltcall-testi.png)
 > Salt-call testit. Toimii, mutta ääkkösistä ei näytä juurikaan pitävän.
