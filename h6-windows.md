@@ -115,3 +115,15 @@ Seuraavaksi salasanoja, salaisia kysymyksiä ja Microsoftin mainosahdistelua, mi
 > Käy ja kukkuu, resurssit riittävät toistaiseksi
 
 Lopuksi poistin Windowsin kaikissa asennuksissa ärsyttävästi silmille hyppivät hyväksymisikkunat (Vasemman alakulman hakupalkki -> User account control settings -> Never notify -> OK). 
+
+## B) Salt Windowsille
+
+Latasin Saltin 3006.4 -version asennustiedoston ([linkki](https://repo.saltproject.io/salt/py3/windows/latest/Salt-Minion-3006.4-Py3-AMD64-Setup.exe)). Koska tarjolla oli vain .exe-tiedosto, päätin asentaa ohjelman perinteiseen tapaan avaamalla ohjelman graafisen käyttöliittymän kautta. Asennuksen kysellessä herran IP-osoitetta annoin aiempia orjianikin komennelleen palvelimen ip-osoitteen. Tälle orjalle valitsin nimeksi win10-orja ja painoin Install. Asennuksen alkuvaiheissa Salt kyseli, että asennellaanko puuttuva vcredist samassa yhteydessä, minkä hyväksyin. Asennus rullasi muutamassa sekunissa loppuun onnistuneesti.
+
+![Add file: Onnistunut asennus](/img/win10-salt.png)
+> Start salt-minion -> Finish
+
+Testasin vielä paikallisesti Salt minionin asentuneen avaamalla Powershellin admin-oikeuksin (tehtäväpalkin haku -> Powershell -> Run as Administrator). Testit suoritin kokeilemalla Linuxista tuttuja komentoja ``salt-call --version`` sekä ``salt-call --local -l info state.single cmd.run "echo toimiiko tää tälleen?". Ensimmäinen komento tulosti version 3006.4 (Sulfur) ja jälkimmäinen väitti ainakin tehneensä työtä käskettyä (Succeeded: 1 (changed=1)). 
+
+![Add file: salt-call testit](/img/win10-saltcall-testi.png)
+> Salt-call testit. Toimii, mutta ääkkösistä ei näytä juurikaan pitävän.
