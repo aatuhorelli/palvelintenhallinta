@@ -81,7 +81,7 @@ Lähde: https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html
 
 Koneella oli jo valmiiksi asennettuna VirtualBox, joten sen asennusta en käy erikseen läpi tässä kohdassa.
 
-Aloitin tehtävän lataamalla Halonen, Rajala & Ollikainen [ohjeessa](https://github.com/therealhalonen/PhishSticks/blob/master/notes/ollikainen/windows.md) mainitun Windows 10 -asennustiedoston. Lataus kesti joitain minuutteja, ja sen jälkeen tiedosto löytyi /home/aatuh/Downloads -hakemistosta. Latauksen jälkeen käynnistin VirtualBoxin (``$ virtualbox``) ja loin uuden virtuaalikoneen klikkaamalla "New". Annoin virtuaalikoneen nimeksi Windows-10-orja ja valitsin Version-listasta Windows 10 (64-bit).
+Aloitin tehtävän lataamalla Halonen, Rajala & Ollikainen [ohjeessa](https://github.com/therealhalonen/PhishSticks/blob/master/notes/ollikainen/windows.md) mainitun Windows 10 -asennustiedoston. Lataus kesti joitain minuutteja, ja sen jälkeen tiedosto löytyi /home/aatuh/Downloads -hakemistosta. Latauksen jälkeen käynnistin VirtualBoxin (``$ virtualbox``) ja loin uuden virtuaalikoneen klikkaamalla "New". Annoin virtuaalikoneen nimeksi Windows-10-orja ja valitsin Version-listasta Windows 10 (64-bit). Aiemmin lukemassani ohjeessa ei tässä vaiheessa vielä mountattu asennusmediaa, joten jätin sen itsekin tekemättä.
 
 ![Add file: VirtualBox Windows 10](/img/win10-virtualbox.png)
 > VirtualBoxin ensimmäisen sivun asetukset
@@ -94,7 +94,14 @@ Tämän jälkeen painoin Next, ja määritin koneen RAM-muistin määräksi 8192
 ![Add file: Virtualbox HDD](/img/win10-hdd.png)
 > HDD-asetukset
 
-Seuraavaksi painoin Next, tarkastin VirtualBoxin näyttämän yhteenvedon ja todettuani sen vastaavan sitä, mitä kuvittelinkin, painoin Finish. 
+Seuraavaksi painoin Next, tarkastin VirtualBoxin näyttämän yhteenvedon ja todettuani sen vastaavan sitä, mitä kuvittelinkin, painoin Finish. Kone ilmestyi VirtualBoxin etusivulle, josta käynnistin koneen painamalla Start. Käynnistyessään kone valitti, ettei löydä bootattavaa mediaa, ja antoi etsiä levykuvaa tietokoneelta. Valitsin ensimmäisessä vaiheessa lataamani Windows 10 -asennusmedian, minkä jälkeen painoin Mount and Retry Boot. Kone käynnistyi Windowsin asennustyökaluun.
 
+![Add file: Ei boottimediaa](/img/win10-ei-boottaa.png)
+> Virheilmoitus ja asennusmedian valinta
 
+Asennusmediassa oli vain englanninkielinen Windows, jonka olisin joka tapauksessa valinnut mahdollisten virheilmoituksen selvittämiseksi. Aika- ja valuutta-, sekä näppäimistöasetuksiin valitsin kuitenkin Finnish. Next -> Install now. Hyväksyin käyttöehdot lukematta niitä, valitsin seuraavasta aukeavasta ikkunasta "Custom: Install Windows only (advanced)" ja valitsin ainoan näkyvän tallennusmedian asennuskohteeksi. 
 
+![Add file: Tonne asennetaan](/img/win10-partitio.png)
+>Helppo valinta, tänne asennetaan
+
+Klikkasin Next ja Windows asentui parissa minuutissa ilman virheitä. Tämän jälkeen asennusohjelma käynnisti virtuaalikoneen uudelleen ja asennus jatkui Microsoftin kysymyksiin vastailemalla. 
