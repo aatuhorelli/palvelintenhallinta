@@ -178,7 +178,7 @@ Orja oli linjoilla, joten grains.items voitiin kätevästi käskyttää herran k
 
 ## D) Saltin file -toiminto Windowsilla
 
-Testasin file.managed-toimintoa herran kautta samaan tyyliin kuin Linux-orjia komentaessa, ja ajattelin antaa mahdollisten virheilmoitusten johdattaa minut oikeille raiteille. Suoritin komennon ``$ sudo salt 'win10-orja' state.single file.managed c:\testi\nakki.txt contents="Olen tekstitiedosto moi"``. Suoritus epäonnistui virheilmoituksella "Specified file c:testinakki.txt is not an absolute path". Tulosteen poluista puuttuivat \-merkit, joten epäilin niiden toimivan "escapeina", ja käänsin ne toisin päin. Samalla virheilmoitus muuttui: 
+Testasin file.managed-toimintoa herran kautta samaan tyyliin kuin Linux-orjia komentaessa, ja ajattelin antaa mahdollisten virheilmoitusten johdattaa minut oikeille raiteille. Suoritin komennon ``$ sudo salt 'win10-orja' state.single file.managed c:\testi\nakki.txt contents="Olen tekstitiedosto moi"``. Suoritus epäonnistui virheilmoituksella "Specified file c:testinakki.txt is not an absolute path". Tulosteen poluista puuttuivat \\-merkit, joten epäilin niiden toimivan "escapeina", ja käänsin ne toisin päin. Samalla virheilmoitus muuttui: 
 
     $ sudo salt 'win10-orja' state.single file.managed c:/testi/nakki.txt contents="Olen tekstitiedosto moi"
     win10-orja:
