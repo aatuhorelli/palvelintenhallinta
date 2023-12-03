@@ -113,3 +113,5 @@ Seuraavaksi salasanoja, salaisia kysymyksiä ja Microsoftin mainosahdistelua, mi
 
 ![Add file: task manager](/img/win10-taskmanager.png)
 > Käy ja kukkuu, resurssit riittävät toistaiseksi
+
+Lopuksi poistin Windowsin kaikissa asennuksissa ärsyttävästi silmille hyppivät hyväksymisikkunat (Vasemman alakulman hakupalkki -> User account control settings -> Never notify -> OK). 
