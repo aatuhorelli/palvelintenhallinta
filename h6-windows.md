@@ -5,7 +5,7 @@ Tehtävänannot luettavissa https://terokarvinen.com/2023/configuration-manageme
 Virtualisoinnissa käytetyn isäntälaitteen tietoja:
     
     OS: Debian 12 (Bookworm)
-    CPU: 12th Gen Intel(R) Core(TM) i7-1255U (x86_64)
+    CPU: 12th Gen Intel(R) Core(TM) i7-1255U (x86_64), 10 ydintä 
     RAM: 16Gt 
     SSD: 512Gt NVME M.2
 
@@ -18,4 +18,61 @@ Virtualisoinnissa käytetyn isäntälaitteen tietoja:
 
 ## x) Lue ja tiivistä
 
+### Salt Windowsilla
 
+ - Asennustiedoston [linkki](https://docs.saltproject.io/salt/install-guide/en/latest/topics/install-by-operating-system/windows.html)
+ - Asennus Powershellin kautta
+   - Run as administrator
+   - Siirry kansioon, johon tiedosto ladattu ``cd C:\~~\``
+   - Tiedoston ajaminen ``./tiedoston_nimi.msi # esim ./Salt-Minion-3004.2-1-Py3-AMD64.msi``
+   - Asennuksen jälkeen testaus esim. ``salt-call --local cmr.run "echo hello"``
+
+ - Saltin komennot Powershellin kautta samat kuin Linuxilla.
+   - Paikalliset komennot ``salt-call --local [komento] # esim. salt-call --local grains.items``
+   - Oma huomio: polkujen määrittely tiedostojärjestelmä huomioiden (/tmp/hello vs. %TEMP%)
+   
+
+Lähde: https://github.com/sannnir/h5-Windows
+
+### Halonen, Rajala ja Ollikainen 2023: Installing Windows 10 on a virtual machine
+
+Artikkelissa on ohjeet Windows 10:n asennukselle Virtuaalikoneelle.
+
+#### Valmistelu ja virtuaalikoneen määrittely:
+ - Asennusmedian latauslinkki: https://www.microsoft.com/en-us/evalcenter/download-windows-10-enterprise
+   - English (Great Britain) 64-bit, ei LTSC (Long-Term Servicing Channel, ellei tarkoitus käyttää virtuaalikonetta pitkään)
+ - Virtualisointi VirtualBoxilla:
+   - New -> Versio: Windows 10 -> RAM > 8Gt -> Create
+   - Tarpeeksi tallennustilaa, esim. 50Gt
+     - Hard disk file type: VDI
+     - Dynamically allocated
+   - CPU: 4 tai enemmän
+   - Käynnistä virtuaalikone ja valitse asennusmediaksi aiemmin ladattu Windows 10 -tiedosto
+
+#### Windows 10 asennus
+ - Install now -> Custom: Install Windows only -> valitse kohteeksi virtuaaliasema -> Paikalliset asetukset
+ - Mainonnan kohdistamiseen liittyviin kyselyihin ja tietojen jakamiseen vastaukset oman mielen mukaan
+ - Sign in with Microsoft -kohdassa valitse Domain join instead oikeasta alalaidasta
+ - Nimeä laite, valitse salasana ja aseta turvakysymykset
+
+Lähde: https://github.com/therealhalonen/PhishSticks/blob/master/notes/ollikainen/windows.md
+
+### SB Workgroup, The Linux Foundation 2015: Filesystem Hierarchy Standard
+
+FHS:n tarkoitus on luoda ohjelmille ja käyttäjille looginen tapa järjestellä tiedostoja ja arkistoja. 
+
+Poimintoja hierarkiasta:
+ - /: Järjestelmän juurihakemisto. Sisältää vähintään järjestelmän käynnistämiseen, palauttamiseen ja korjaamiseen tarvittavat tiedot.
+ - /bin/: Tärkeiden komentojen binäärit
+ - /boot/: Bootloaderin staattiset tiedostot
+ - /etc/: Järjestelmäasetukset
+ - /media/: Irroitettavien medioiden mounttaus
+ - /srv/: Järjestelmän palveluiden dataa
+ - /tmp/: Väliaikaiset tiedot
+ - /usr/: Paikallinen hierarkia
+   - /usr/bin/: Useimmat komennot
+   - /usr/local/: Paikallisesti asennetuja ohjelmia
+ - /var/: Monenlaisia datatiedostoja, kuten lokeja ja väliaikaisia tiedostoja
+   - /var/log/: lokitiedostoja
+
+Lähde: https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html
