@@ -25,11 +25,10 @@ Virtualisoinnissa käytetyn isäntälaitteen tietoja:
    - Run as administrator
    - Siirry kansioon, johon tiedosto ladattu ``cd C:\~~\``
    - Tiedoston ajaminen ``./tiedoston_nimi.msi # esim ./Salt-Minion-3004.2-1-Py3-AMD64.msi``
-   - Asennuksen jälkeen testaus esim. ``salt-call --local cmr.run "echo hello"``
+   - Asennuksen jälkeen testaus esim. ``salt-call --local cmd.run "echo hello"``
 
  - Saltin komennot Powershellin kautta samat kuin Linuxilla.
    - Paikalliset komennot ``salt-call --local [komento] # esim. salt-call --local grains.items``
-   - Oma huomio: polkujen määrittely tiedostojärjestelmä huomioiden (/tmp/hello vs. %TEMP%)
    
 
 Lähde: https://github.com/sannnir/h5-Windows
