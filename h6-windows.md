@@ -102,6 +102,14 @@ Seuraavaksi painoin Next, tarkastin VirtualBoxin näyttämän yhteenvedon ja tod
 Asennusmediassa oli vain englanninkielinen Windows, jonka olisin joka tapauksessa valinnut mahdollisten virheilmoituksen selvittämiseksi. Aika- ja valuutta-, sekä näppäimistöasetuksiin valitsin kuitenkin Finnish. Next -> Install now. Hyväksyin käyttöehdot lukematta niitä, valitsin seuraavasta aukeavasta ikkunasta "Custom: Install Windows only (advanced)" ja valitsin ainoan näkyvän tallennusmedian asennuskohteeksi. 
 
 ![Add file: Tonne asennetaan](/img/win10-partitio.png)
->Helppo valinta, tänne asennetaan
+> Helppo valinta, tänne asennetaan
 
-Klikkasin Next ja Windows asentui parissa minuutissa ilman virheitä. Tämän jälkeen asennusohjelma käynnisti virtuaalikoneen uudelleen ja asennus jatkui Microsoftin kysymyksiin vastailemalla. 
+Klikkasin Next ja Windows asentui parissa minuutissa ilman virheitä. Tämän jälkeen asennusohjelma käynnisti virtuaalikoneen uudelleen pariin kertaan ja asennus jatkui muutaman minuutin kuluttua Microsoftin kysymyksiin vastailemalla. Ohitan käyttäjään ja paikallisiin asetuksiin liittyvät kysymykset raportissa. Asennusohjelma käynnisti koneen vielä kerran uudelleen ja tarjosi kirjautumista Microsoft-tilille. Valitsin vasemmasta alakulmasta "Domain join instead". 
+
+![Add file: domain join](/img/win10-domain-join.png)
+> Valitaan 'Domain join instead'
+
+Seuraavaksi salasanoja, salaisia kysymyksiä ja Microsoftin mainosahdistelua, minkä jälkeen Windows kehoitti olemaan sammuttamatta konetta sen valmistellessa käyttöjärjestelmää muutaman minuutin ajan. Tein työtä käskettyä ja parissa minuutissa Windowsin työpöydä tervehti minua iloisella kilahduksella. Avasin Task Managerin ja kurkistin paljonko resursseja tyhjä Windows kuluttaa, sekä suoritin nettiyhteyden testaamisen Windows Edgen tärkeimmällä tehtävällä: korvaavan selaimen latauksella.
+
+![Add file: task manager](/img/win10-taskmanager.png)
+> Käy ja kukkuu, resurssit riittävät toistaiseksi
