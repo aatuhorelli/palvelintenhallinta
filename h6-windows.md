@@ -166,7 +166,8 @@ Orja oli linjoilla, joten grains.items voitiin kätevästi käskyttää herran k
     osversion:
         10.0.19045           # Windowsin versio
     pending_reboot:
-        True                 # Joku asetus ilmeisesti odottaa järjestelmän uudelleenkäynnistystä. Vain_windows_jutut
+        True                 # Joku asetus ilmeisesti odottaa järjestelmän uudelleenkäynnistystä.
+                             # [Lisäys: reboottasin koneen myöhemmin, ja tähän muuttui tilaksi False]
     pythonexecutable:
         C:\Program Files\Salt Project\Salt\Scripts\python.exe # Pythonin sijainti orjalla
     saltpath:
