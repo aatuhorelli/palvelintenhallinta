@@ -76,3 +76,25 @@ Poimintoja hierarkiasta:
    - /var/log/: lokitiedostoja
 
 Lähde: https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html
+
+## A) Windowsin asennus virtuaalikoneeseen
+
+Koneella oli jo valmiiksi asennettuna VirtualBox, joten sen asennusta en käy erikseen läpi tässä kohdassa.
+
+Aloitin tehtävän lataamalla Halonen, Rajala & Ollikainen [ohjeessa](https://github.com/therealhalonen/PhishSticks/blob/master/notes/ollikainen/windows.md) mainitun Windows 10 -asennustiedoston. Lataus kesti joitain minuutteja, ja sen jälkeen tiedosto löytyi /home/aatuh/Downloads -hakemistosta. Latauksen jälkeen käynnistin VirtualBoxin (``$ virtualbox``) ja loin uuden virtuaalikoneen klikkaamalla "New". Annoin virtuaalikoneen nimeksi Windows-10-orja ja valitsin Version-listasta Windows 10 (64-bit).
+
+![Add file: VirtualBox Windows 10](/img/win10-virtualbox.png)
+> VirtualBoxin ensimmäisen sivun asetukset
+
+Tämän jälkeen painoin Next, ja määritin koneen RAM-muistin määräksi 8192MB ja prosessorien määräksi 4 kappaletta. En kuvitellut tekeväni laitteella mitään kovinkaan raskasta, joten oletin pärjääväni neljällä ytimellä. Painoin jälleen Next, käytin seuraavalla sivulla valmiiksi valittua vaihtoehtoa "Create a Virtual Hard Disk Now" ja määritin virtuaalisen aseman kooksi 60Gt. Windows on Linuxia raskaampi käyttöjärjestelmä, enkä halunnut tilan loppuvan yllättäen kesken.
+
+![Add file: Virtualbox cpu & ram](/img/win10-ram-cpu.png)
+> RAM ja CPU -asetukset
+
+![Add file: Virtualbox HDD](/img/win10-hdd.png)
+> HDD-asetukset
+
+Seuraavaksi painoin Next, tarkastin VirtualBoxin näyttämän yhteenvedon ja todettuani sen vastaavan sitä, mitä kuvittelinkin, painoin Finish. 
+
+
+
