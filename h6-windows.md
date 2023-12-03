@@ -127,3 +127,52 @@ Testasin vielä paikallisesti Salt minionin asentuneen avaamalla Powershellin ad
 
 ![Add file: salt-call testit](/img/win10-saltcall-testi.png)
 > Salt-call testit. Toimii, mutta ääkkösistä ei näytä juurikaan pitävän.
+
+
+## C & J) Grains.items
+
+Koska paikalliset testit tuntuivat toimivan, otin ssh-yhteyden komentorivin kautta herrana toimivaan palvelimeen ja tarkastin, onko uudenkarhea orjani soitellut kotiin: ``$ sudo salt-key # Unaccepted Keys: win10-orja``. Tavoitellut oli, joten hyväksyin avaimen komennolla ``$ sudo salt-key -A # Proceed [n/Y] -> Y``. Tämän jälkeen kokeilin vielä, että yhteys on olemassa testaamalla vastaako win10-orja pingiin: ``$ sudo salt 'win10-orja' test.ping``.
+
+![Add file: orja soittelee](/img/win10-orja-avain.png)
+> Avain hyväksytty ja orja vastaa pingiin
+
+Orja oli linjoilla, joten grains.items voitiin kätevästi käskyttää herran kautta. Tulosteen käsittelyn helpottamiseksi kirjauduin virtuaalikoneen komentorivissä pyörivästä ssh-yhteydestä ulos komennolla ``$ logout`` ja avasin ssh-yhteyden isäntälaitteen terminaalista. Näin copy-paste olisi helpompaa. Hain Windows-orjan tiedot komennolla ``$ sudo salt 'win10-orja' grains.items``. Rivejä tuli melko paljon. Alla tuloste karsittuna:
+
+    win10-orja:
+    ----------
+    cpu_model:
+        12th Gen Intel(R) Core(TM) i7-1255U    # Sama prosessori, kuin isäntälaitteessa: 12. sukupolven Intel i7
+    cpuarch:
+        AMD64    # Prosessorin arkkitehtuuri
+    cwd:
+        C:\Program Files\Salt Project\Salt    # current working directory: komento ajettu tässä sijainnissa
+    id:
+        win10-orja    # Orjan nimi
+    init:
+        Windows       # Windows. Menisiköhän Vagrantissa tällä init-nimellä?
+    ipv4:
+        - 10.0.2.15    # IP-osoite
+        - 127.0.0.1    # localhostin IP
+    master:
+        172.232.xxx.xxx      # Herrapalvelimen osoite
+    mem_total:
+        8191                 # Yksikkö Megatavua (Mt/MB)
+    num_cpus:
+        4                    # Prosessoreiden määrä. Täsmää VirtualBoxissa asetettuihin.
+    num_gpus:
+        0                    # Ei erillistä näytönohjainta
+    osfinger:
+        Windows-10           # Käyttöjärjestelmä
+    osversion:
+        10.0.19045           # Windowsin versio
+    pending_reboot:
+        True                 # Joku asetus ilmeisesti odottaa järjestelmän uudelleenkäynnistystä. Vain_windows_jutut
+    pythonexecutable:
+        C:\Program Files\Salt Project\Salt\Scripts\python.exe # Pythonin sijainti orjalla
+    saltpath:
+        C:\Program Files\Salt Project\Salt\Lib\site-packages\salt # Saltin sijainti orjalla
+    saltversion:
+        3006.4               # Saltin versio orjalla. Oltava sama, kuin herralla. 
+    shell:
+        C:\Windows\system32\cmd.exe    # Käytettävä komentorivi. Ilmeisesti ajaa komennot tällä. 
+                                       # Pitänee vaihtaa powershelliin, jos haluaa käyttää Linuxin komentorivin komentoja.
