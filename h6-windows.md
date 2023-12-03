@@ -245,7 +245,7 @@ Käynnistin Powerhsellin admin-oikeuksilla edellisissä kohdissa mainitulla tava
 ![Add file: winrepo asennus](/img/win10-winrepo.png)
 > Varoituksia tuli, mutta refresh_db onnistui
 
-Etsin Googlesta [Saltstackin winrepon GitHub-repositorion)(https://github.com/saltstack/salt-winrepo-ng) silmäilläkseni, mitä asennettavaa sieltä löytyisi. Katselisin varmasti paljon videoita Windows-orjallani, joten testasin vlc:n asennusta komentelemalla orjaa herran kautta: ``$ sudo 'win10-orja' pkg.installed vlc``. Sain virheilmoituksen "'pkg.installed' is not available". Tarkastin vielä uudemman kerran ohjeen ja huomasin käytettävän komennon olevan pkg.install. Kokeilin sitä.
+Etsin Googlesta [Saltstackin winrepon GitHub-repositorion](https://github.com/saltstack/salt-winrepo-ng) silmäilläkseni, mitä asennettavaa sieltä löytyisi. Katselisin varmasti paljon videoita Windows-orjallani, joten testasin vlc:n asennusta komentelemalla orjaa herran kautta: ``$ sudo 'win10-orja' pkg.installed vlc``. Sain virheilmoituksen "'pkg.installed' is not available". Tarkastin vielä uudemman kerran ohjeen ja huomasin käytettävän komennon olevan pkg.install. Kokeilin sitä.
 
     $ sudo salt 'win10-orja' pkg.installed vlc # ensimmäinen epäonnistunut suoritus
     win10-orja:
@@ -266,4 +266,10 @@ Windows-orjien asennuksissa on näemmä suppeammat tulosteet, mutta asennus onni
 > VLC toimii
 
 
-    
+## Lähteet
+
+https://terokarvinen.com/2023/configuration-management-2023-autumn/
+https://github.com/sannnir/h5-Windows
+https://github.com/therealhalonen/PhishSticks/blob/master/notes/ollikainen/windows.md
+https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html
+https://docs.saltproject.io/en/latest/topics/windows/windows-package-manager.html
