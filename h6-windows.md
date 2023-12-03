@@ -156,11 +156,11 @@ Orja oli linjoilla, joten grains.items voitiin kätevästi käskyttää herran k
     master:
         172.232.xxx.xxx      # Herrapalvelimen osoite
     mem_total:
-        8191                 # Yksikkö Megatavua (Mt/MB)
+        8191                 # RAM määrä. Yksikkö megatavua (Mt/MB)
     num_cpus:
-        4                    # Prosessoreiden määrä. Täsmää VirtualBoxissa asetettuihin.
+        4                    # Prosessoreiden määrä(kpl). Täsmää VirtualBoxissa asetettuihin.
     num_gpus:
-        0                    # Ei erillistä näytönohjainta
+        0                    # Ei erillistä näytönohjainta (lkm: 0kpl)
     osfinger:
         Windows-10           # Käyttöjärjestelmä
     osversion:
