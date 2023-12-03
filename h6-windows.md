@@ -180,7 +180,7 @@ Orja oli linjoilla, joten grains.items voitiin kätevästi käskyttää herran k
 
 Testasin file.managed-toimintoa herran kautta samaan tyyliin kuin Linux-orjia komentaessa, ja ajattelin antaa mahdollisten virheilmoitusten johdattaa minut oikeille raiteille. Suoritin komennon ``$ sudo salt 'win10-orja' state.single file.managed c:\testi\nakki.txt contents="Olen tekstitiedosto moi"``. Suoritus epäonnistui virheilmoituksella "Specified file c:testinakki.txt is not an absolute path". Tulosteen poluista puuttuivat \-merkit, joten epäilin niiden toimivan "escapeina", ja käänsin ne toisin päin. Samalla virheilmoitus muuttui: 
 
-    aatu@localhost:~$ sudo salt 'win10-orja' state.single file.managed c:/testi/nakki.txt contents="Olen tekstitiedosto moi"
+    $ sudo salt 'win10-orja' state.single file.managed c:/testi/nakki.txt contents="Olen tekstitiedosto moi"
     win10-orja:
     ----------
               ID: c:/testi/nakki.txt
@@ -204,3 +204,32 @@ File.managed ei ilmeisesti suostu luomaan kansiota. Kävin luomassa sen virtuaal
 
 ![Add file: orjan testikansio](/img/win10-testikansio.png)
 > Testikansion luominen powershellin kautta
+
+Kansio oli nyt luotu, joten ajoin aiemman file.managed-komennon uudelleen. 
+
+    $ sudo salt 'win10-orja' state.single file.managed c:/testi/nakki.txt contents="Olen tekstitiedosto moi"
+    win10-orja:
+    ----------
+              ID: c:/testi/nakki.txt
+        Function: file.managed
+          Result: True
+         Comment: File c:/testi/nakki.txt updated # tiedosto päivitetty
+         Started: 00:30:51.525961
+        Duration: 31.834 ms
+         Changes:   
+              ----------
+                  diff:
+                  New file
+
+    Summary for win10-orja
+    ------------
+    Succeeded: 1 (changed=1)  # Onnistunut ajo, yhtä tiedostoa muutettu
+    Failed:    0
+    ------------
+    Total states run:     1
+    Total run time:  31.834 ms
+
+Komennon suorittaminen onnistui, 'result' oli True ja yhteenveto-osiossa kaikki (1) komentoa oli ajettu onnistuneesti. Tarkistin vielä lopuksi orjan powershellistä, että tiedosto oli olemassa ja sisältö vastasi odotuksia. ``ls # nakki.txt löytyy`` & ``cat .\nakki.txt``.
+
+![Add file: nakkia on](/img/win10-file-nakki.png)
+> Tiedosto löytyy ja sisältö on täydellinen
